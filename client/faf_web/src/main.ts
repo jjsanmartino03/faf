@@ -1,7 +1,8 @@
 import { createApp } from 'vue'
 
 import PrimeVue from 'primevue/config'
-import 'primevue/resources/themes/aura-dark-lime/theme.css'
+import './style.css'
+import 'primevue/resources/themes/aura-light-green/theme.css'
 import 'primeicons/primeicons.css'
 import '/node_modules/primeflex/primeflex.css'
 import router from "./router";
