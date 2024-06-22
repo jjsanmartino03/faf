@@ -1,10 +1,18 @@
-Instalación
+# Server
+Aquí se encuentra la documentación del **servidor de la aplicación FAF**. Se trata 
+de una API hecha en Python con Django y `django-rest-framework`, que utiliza MySQL
+como base de datos.
+
+## Instalación
 
 Prerrequisitos:
 
-- Tener instalado Python 3
-- Tener instalado virtualenv (`pip install virtualenv`)
+- Tener instalado Python versión 3 y `pip`
+- Tener instalado virtualenv
+  - Si no lo tienes instalado, se instala simplemente con `pip install virtualenv`, y ya queda 
+  habilitado globalmente
 - Tener un servidor mysql corriendo
+  - Para instalarlo en Windows, se puede descargar el instalador desde [la página oficial](https://dev.mysql.com/downloads/installer/)
 
 Pasos
 
