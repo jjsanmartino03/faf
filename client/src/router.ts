@@ -4,19 +4,30 @@ import {
     Router,
     RouteRecordRaw,
     RouterHistory,
-    // RouterView,
+    RouterView,
   } from "vue-router";  
 
   const Shell = () => import("./views/Shell.vue");
+
+  const Login = () => import("./views/Login.vue");
   
   const routes: RouteRecordRaw[] = [
     {
       path: "",
       component: Shell,
-      // beforeEnter: authGuard,
-      // redirect: "login",
+      redirect: "login",
       children: [
-        //Rutas hijas del shell
+        {
+          path: "login",
+          component: RouterView,
+          children: [
+            { 
+              path: "",
+              component: Login,
+              name: "login"
+            }
+          ]
+        }
       ]
     },
     { path: "/:catchAll(.*)", redirect: "/" },
