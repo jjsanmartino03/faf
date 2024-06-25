@@ -3,3 +3,5 @@ interface Team {
   logo: string;
   id: number;
 }
+
+export default Team;
