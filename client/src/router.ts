@@ -9,7 +9,7 @@ import {
 
   const Shell = () => import("./views/Shell.vue");
 
-  const Login = () => import("./views/Login.vue");
+  const Login = () => import("./views/Login/Login.vue");
   
   const routes: RouteRecordRaw[] = [
     {
