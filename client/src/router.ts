@@ -8,7 +8,7 @@ import {
 } from "vue-router";
 
 const Shell = () => import("./views/Shell.vue");
-const Login = () => import("./views/Login.vue");
+const Login = () => import("./views/Login/Login.vue");
 const Home = () => import("./views/Home.vue");
 const Teams = () => import("./views/teams/TeamsList.vue");
 const Team = () => import("./views/teams/Team.vue");
