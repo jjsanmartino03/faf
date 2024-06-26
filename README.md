@@ -35,6 +35,10 @@ correspondiente.
 - [Instalación del Backend](server/README.md)
   - [Instalación de la herramienta de visión](vision/README.md)
 
+## Herramienta de Visión
+La definición de la herramienta a utilizar para el reconocimiento facial y la prueba inicial se encuentran en el archivo
+[vision/README.md](vision/README.md).
+
 ## Prototipo de Interfaz
 Desarrollamos el prototipo en Vue, y lo presentaremos en clase el día 26/06/2024. Para ver el prototipo, puede 
 levantar el frontend y visualizarlo de manera local en su navegador. Para ello, siga las instrucciones de instalación

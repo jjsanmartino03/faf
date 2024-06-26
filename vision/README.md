@@ -72,14 +72,18 @@ de las imágenes.
 
 ![7ec61a7a-c5e0-4db9-a732-1b9052919098](https://github.com/jjsanmartino03/faf/assets/114831273/d2e597c1-83e0-40b4-be6a-19f9b34a77cb)
 ![e9bd2708-51a4-42d9-8f6d-e803e7f8e74b](https://github.com/jjsanmartino03/faf/assets/114831273/bf8c0438-ab12-4ab2-a69c-2aca4e8c16e1)
+![Messi](../vision/proof-of-concept/messi.png)
 
 # Imagen a verificar:
 
 ![51e7dc63-203e-4e2f-9e51-a6e4f637be21](https://github.com/jjsanmartino03/faf/assets/114831273/da5ac2f2-0f7f-43c0-9439-62fa8291c6b8)
+![Argentina](../vision/proof-of-concept/arg.png)
+
 
 # Resultado:
 
 ![501fd3d0-4cd0-4421-827d-c1de877b54ac](https://github.com/jjsanmartino03/faf/assets/114831273/8df745fa-f3e0-4652-9cf0-13c6f934954a)
+![Argentina](../vision/proof-of-concept/argentina-resultado.png)
 
 # Comentarios extra:
 
