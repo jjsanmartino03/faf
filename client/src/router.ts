@@ -10,6 +10,7 @@ import {
   const Shell = () => import("./views/Shell.vue");
 
   const Login = () => import("./views/Login/Login.vue");
+  const MatchList = () => import("./views/Match/Match-list.vue");
   
   const routes: RouteRecordRaw[] = [
     {
@@ -25,6 +26,17 @@ import {
               path: "",
               component: Login,
               name: "login"
+            }
+          ]
+        },
+        {
+          path: "matches",
+          component: RouterView,
+          children: [
+            {
+              path: "",
+              component: MatchList,
+              name: "matches"
             }
           ]
         }
