@@ -76,6 +76,7 @@ interface MatchDto {
 
 </script>
 <template>
+  <main class="p-2">
     <h1 class="text-center my-2">Partidos</h1>
     <div class="flex">
             <div  class="flex justify-content-center w-full">
@@ -92,6 +93,7 @@ interface MatchDto {
             </div>
         </div>
     </div>
+  </main>
 </template>
 
 <style scoped>

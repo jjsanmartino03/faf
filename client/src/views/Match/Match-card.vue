@@ -27,6 +27,13 @@ const borderClass = computed(() => {
     }
 });
 
+const ptBody = {
+    "body": {
+        "class": "pt-2 pl-2"
+    }
+}
+
+
 interface MatchDto {
     id: number,
     date: string,
@@ -42,7 +49,7 @@ interface MatchDto {
 </script>
 
 <template>
-    <Card :class="borderClass" body-class="p-0">
+    <Card :class="borderClass" :pt="ptBody">
         <template #content>
             <div class="flex justify-content-start">
                 <div>
