@@ -14,6 +14,7 @@ const Teams = () => import("./views/teams/TeamsList.vue");
 const Team = () => import("./views/teams/Team.vue");
 const Category = () => import("./views/teams/Category.vue");
 const Player = () => import("./views/Player.vue");
+const MatchList = () => import("./views/Match/Match-list.vue");
 
 const routes: RouteRecordRaw[] = [
   {
@@ -29,6 +30,17 @@ const routes: RouteRecordRaw[] = [
             path: "",
             component: Login,
             name: "login"
+          }
+        ]
+      },
+      {
+        path: "matches",
+        component: RouterView,
+        children: [
+          {
+            path: "",
+            component: MatchList,
+            name: "matches"
           }
         ]
       },
@@ -61,7 +73,6 @@ const routes: RouteRecordRaw[] = [
       }
     ]
   },
-
   {path: "/:catchAll(.*)", redirect: "/"},
 ];
 
