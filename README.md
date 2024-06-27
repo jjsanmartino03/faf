@@ -33,7 +33,7 @@ correspondiente.
 
 - [Instalación del Frontend](client/README.md)
 - [Instalación del Backend](server/README.md)
-  - [Instalación de la herramienta de visión](vision/README.md)
+- [Instalación de la herramienta de visión](vision/README.md)
 
 ## Herramienta de Visión
 La definición de la herramienta a utilizar para el reconocimiento facial y la prueba inicial se encuentran en el archivo

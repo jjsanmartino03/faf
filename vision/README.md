@@ -9,7 +9,12 @@ Luego utilizamos la herramienta "ChatGPT" para realizar una prueba rápida de fu
 obtuvimos las siguientes líneas de código, en el cual también se utiliza la librería "opencv" para el manejo y edición
 de las imágenes.
 
-# Código de prueba:
+### Librerías a utilizar
+- `face_recognition`: Se utiliza para cargar imágenes, detectar y codificar rostros, y comparar codificaciones faciales.
+- `cv2` (OpenCV): Se utiliza para convertir imágenes entre formatos de color, dibujar anotaciones en las imágenes y mostrar las imágenes procesadas.
+- `numpy`: Se utiliza para operaciones numéricas, como encontrar el índice del valor mínimo en un array de distancias faciales.
+
+## Código de prueba:
 
    ```python
     import face_recognition
