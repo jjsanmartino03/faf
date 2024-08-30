@@ -1,10 +1,25 @@
-from django.shortcuts import render
-from rest_framework import serializers, viewsets,routers
+from rest_framework import serializers, viewsets, routers
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
 from faf_api.models import Teams
 
 
 # Create your views here.
+class GetAuthenticatedUser(viewsets.ViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def list(self, request):
+        user = request.user
+        data = {
+            'username': user.username,
+            'is_staff': user.is_staff,
+        }
+        return Response(data)
+
+
 class TeamsSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Teams
@@ -12,9 +27,13 @@ class TeamsSerializer(serializers.HyperlinkedModelSerializer):
 
 
 class TeamsViewSet(viewsets.ModelViewSet):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     queryset = Teams.objects.all()
     serializer_class = TeamsSerializer
 
 
 router = routers.DefaultRouter()
 router.register(r'teams', TeamsViewSet)
+router.register(r'user', GetAuthenticatedUser, basename='user')
