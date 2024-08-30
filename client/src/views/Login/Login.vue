@@ -10,35 +10,30 @@ import FloatLabel from 'primevue/floatlabel';
 
 import SvgTrophy from './SvgTrophy.vue';
 import {useRouter} from "vue-router";
+import {useAuthStore} from "../../store/auth.ts";
 
 const router = useRouter();
 
-
 const primaryColor = ref(getComputedStyle(document.documentElement).getPropertyValue('--primary-color'));
-
+const authStore = useAuthStore()
 const username = ref('');
 const password = ref('');
 
 const loading = ref(false);
 
+if (authStore.isAuthenticated) {
+  router.push({
+    name: 'teams'
+  })
+}
 
-const goTo = () => {
-  loading.value = true;
-  setTimeout(() => {
-    if (username.value === 'delegado' && password.value === 'delegado') {
-      router.push({
-        name: 'matches'
-      })
-    } else if (username.value === 'admin' && password.value === 'admin') {
-      router.push({
-        name: 'teams'
-      })
-    } else {
-      alert('Usuario o clave incorrectos');
-    }
-    loading.value = false;
-  }, 2000);
+async function login(e) {
+  e.preventDefault()
+  const result = await authStore.login(username.value, password.value)
 
+  if (result) {
+    await router.push('/teams')
+  }
 }
 
 </script>
@@ -75,7 +70,7 @@ const goTo = () => {
             </div>
             <div class="mt-3">
                             <span v-if="!loading">
-                                <Button label="Entrar" @click="goTo"/>
+                                <Button label="Entrar" @click="login"/>
                             </span>
               <span v-else>
                                 <div class="flex justify-content-center">

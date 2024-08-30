@@ -5,8 +5,14 @@ import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import {mockTeams} from "../../mocks/teams.ts";
+import {useTeamsStore} from "../../store/teams.ts";
+import {onMounted} from "vue";
 
+const teamsStore = useTeamsStore()
 
+onMounted(() => {
+  teamsStore.getTeams()
+})
 </script>
 
 <template>
@@ -24,16 +30,16 @@ import {mockTeams} from "../../mocks/teams.ts";
       </div>
 
     </header>
-    <DataTable :value="mockTeams" table-style="min-width: 100%; width: 100%" class="w-full">
+    <DataTable :value="teamsStore.teams" table-style="min-width: 100%; width: 100%" class="w-full">
       <Column field="logo" header="Escudo" class="w-2">
         <template #body="slotProps">
-          <img :src="slotProps.data.logo" :alt="slotProps.data.logo" class="w-4rem border-round"/>
+          <img :src="slotProps.data.logo_url" :alt="slotProps.data.logo_url" class="w-4rem border-round"/>
         </template>
       </Column>
       <Column sortable field="name" header="Nombre" body-class="font-bold"></Column>
       <Column header="Acciones" body-class="font-bold">
         <template #body="slotProps">
-          <router-link :to="'/teams/' + slotProps.data.id">
+          <router-link :to="'/teams/' + slotProps.data.name">
             <Button icon="pi pi-pen-to-square" class="mr-2"/>
           </router-link>
         </template>
