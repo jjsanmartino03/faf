@@ -19,13 +19,12 @@ const authStore = useAuthStore()
 const username = ref('');
 const password = ref('');
 
-const loading = ref(false);
-
 if (authStore.isAuthenticated) {
   router.push({
     name: 'teams'
   })
 }
+
 
 async function login(e) {
   e.preventDefault()
@@ -68,15 +67,20 @@ async function login(e) {
                 <label for="password">Clave</label>
               </FloatLabel>
             </div>
-            <div class="mt-3">
-                            <span v-if="!loading">
+            <div class="mt-2">
+              <span  v-if="authStore.status == 'error'" class="text-red-500 pt-4">
+                Usuario y/o contraseña inválidos. Intente nuevamente
+              </span>
+            </div>
+            <div class="mt-2">
+              <span v-if="authStore.status!='loading'">
                                 <Button label="Entrar" @click="login"/>
-                            </span>
+              </span>
               <span v-else>
-                                <div class="flex justify-content-center">
-                                    <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;"/>
-                                </div>
-                            </span>
+                <div class="flex justify-content-center">
+                    <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;"/>
+                </div>
+            </span>
             </div>
           </div>
           <div class="flex justify-content-end mt-4">

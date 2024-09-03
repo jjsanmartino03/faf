@@ -11,27 +11,31 @@ type AuthStore = {
   token: string | null
   isAuthenticated: boolean
   user: User | null
+  status: 'loading' | 'success' | 'error' | 'idle'
 }
 
 export const useAuthStore: StoreDefinition<"auth", AuthStore> = defineStore('auth', {
   state: () => ({
     token: null,
     isAuthenticated: localStorage.getItem('token') !== null,
-    user: null
+    user: null,
+    status: 'idle'
   }),
   actions: {
     async login(username, password) {
 
       try {
+        this.status = 'loading'
         const response = await api.post<LoginResponse>('api-auth/', {username, password})
 
         this.token = response.token
         localStorage.setItem('token', response.token)
         this.isAuthenticated = true
+        this.status = 'success'
         return true
       } catch (e) {
-        alert('Error al iniciar sesión, intente nuevamente')
-        return false
+        this.status = 'error';
+        console.error(e)
       }
     },
     logout() {

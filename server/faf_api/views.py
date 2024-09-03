@@ -20,10 +20,11 @@ class GetAuthenticatedUser(viewsets.ViewSet):
         return Response(data)
 
 
-class TeamsSerializer(serializers.HyperlinkedModelSerializer):
+class TeamsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teams
         fields = '__all__'
+        
 
 
 class TeamsViewSet(viewsets.ModelViewSet):

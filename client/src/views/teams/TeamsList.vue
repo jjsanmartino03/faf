@@ -7,6 +7,7 @@ import Column from 'primevue/column';
 import {mockTeams} from "../../mocks/teams.ts";
 import {useTeamsStore} from "../../store/teams.ts";
 import {onMounted} from "vue";
+import CreateTeamDialog from "./CreateTeamDialog.vue";
 
 const teamsStore = useTeamsStore()
 
@@ -20,7 +21,8 @@ onMounted(() => {
     <header class="w-full">
       <div class="flex gap-2 justify-content-between pb-2 align-items-start ">
         <h1>Equipos</h1>
-        <Button label="Nuevo equipo" icon="pi pi-plus" class="mt-4" size="small"/>
+        <CreateTeamDialog
+        />
       </div>
       <div class="flex gap-2">
         <InputGroup>
@@ -39,7 +41,7 @@ onMounted(() => {
       <Column sortable field="name" header="Nombre" body-class="font-bold"></Column>
       <Column header="Acciones" body-class="font-bold">
         <template #body="slotProps">
-          <router-link :to="'/teams/' + slotProps.data.name">
+          <router-link :to="'/teams/' + slotProps.data.id">
             <Button icon="pi pi-pen-to-square" class="mr-2"/>
           </router-link>
         </template>
