@@ -4,16 +4,23 @@ import InputText from 'primevue/inputtext';
 import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import {mockTeams} from "../../mocks/teams.ts";
 import {useTeamsStore} from "../../store/teams.ts";
-import {onMounted} from "vue";
+import {computed, onMounted} from "vue";
 import CreateTeamDialog from "./CreateTeamDialog.vue";
+import ProgressSpinner from "primevue/progressspinner";
 
 const teamsStore = useTeamsStore()
 
 onMounted(() => {
-  teamsStore.getTeams()
+  console.dir(teamsStore)
+  if (teamsStore) {
+    teamsStore.getTeams()
+  } else {
+    console.error('teamsStore is not initialized');
+  }
 })
+
+const teams = computed(() => teamsStore.teams)
 </script>
 
 <template>
@@ -32,7 +39,9 @@ onMounted(() => {
       </div>
 
     </header>
-    <DataTable :value="teamsStore.teams" table-style="min-width: 100%; width: 100%" class="w-full">
+    <DataTable :loading="teamsStore.statusGetTeams == 'loading'" :value="teamsStore.teams"
+               table-style="min-width: 100%; width: 100%" class="w-full">
+
       <Column field="logo" header="Escudo" class="w-2">
         <template #body="slotProps">
           <img :src="slotProps.data.logo_url" :alt="slotProps.data.logo_url" class="w-4rem border-round"/>
@@ -46,6 +55,12 @@ onMounted(() => {
           </router-link>
         </template>
       </Column>
+      <template #loading>
+        <div class="bg-white w-full h-full flex justify-content-center">
+          <ProgressSpinner strokeWidth="4" style="width: 4rem; height: 4rem;"/>
+        </div>
+      </template>
+      <template #empty> No se encontraron equipos.</template>
     </DataTable>
   </main>
 </template>

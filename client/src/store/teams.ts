@@ -6,25 +6,61 @@ export type Team = {
   logo_url: string
 }
 
-type TeamsStore = {
-  teams: Team[] | null
-  isLoading: boolean
+type TeamCategory = {
+  id: number,
+  category: number
 }
 
-export const useTeamsStore: StoreDefinition<"auth", TeamsStore> = defineStore('auth', {
+export type TeamWithCategories = Team & {
+  categories: TeamCategory[]
+}
+
+type TeamsStore = {
+  teams: Team[] | null
+  team: TeamWithCategories | null
+  statusGetTeams: 'loading' | 'success' | 'error' | 'idle',
+  statusCreateTeam: 'loading' | 'success' | 'error' | 'idle',
+  statusGetTeam: 'loading' | 'success' | 'error' | 'idle'
+}
+
+export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('teams', {
   state: () => ({
     teams: null,
-    isLoading: false
+    team: null,
+    statusCreateTeam: 'idle',
+    statusGetTeam: 'idle',
+    statusGetTeams: 'idle'
   }),
   actions: {
     async getTeams() {
-      this.isLoading = true
       try {
-        this.teams = await api.get<Team[]>('api/teams')
+        this.statusGetTeams = 'loading'
+        this.teams = await api.get<Team[]>('api/teams/')
+        this.statusGetTeams = 'success'
       } catch (e) {
-        alert('Error al obtener los equipos')
-      } finally {
-        this.isLoading = false
+        this.statusGetTeams = 'error'
+      }
+    },
+    async createTeam(team: Team) {
+      this.statusCreateTeam = 'loading'
+      try {
+        await api.post('api/teams/', team)
+        this.statusCreateTeam = 'success'
+      } catch (e) {
+        this.statusCreateTeam = 'error'
+      }
+    },
+    async getTeam(teamId: number) {
+      this.statusGetTeam = 'loading'
+      try {
+        const teamResult = await api.get<TeamWithCategories>(`api/teams/${teamId}/`)
+        console.log(teamResult)
+        this.team = teamResult
+        console.log(this.team)
+        this.statusGetTeam = 'success'
+      } catch (e) {
+        this.statusGetTeam = 'error'
+        alert('Error al obtener el equipo')
       }
     }
   }

@@ -3,47 +3,47 @@ import Team from '../interfaces/team';
 const mockTeams: Team[] = [
   {
     name: 'River Plate',
-    logo: '',
+    logo_url: '',
     id: 1
   },
   {
     name: 'Boca Juniors',
-    logo: 'a',
+    logo_url: 'a',
     id: 2
   },
   {
     name: 'Independiente',
-    logo: 'a',
+    logo_url: 'a',
     id: 3
   },
   {
     name: 'Racing Club',
-    logo: 'a',
+    logo_url: 'a',
     id: 4
   },
   {
     name: 'San Lorenzo',
-    logo: 'a',
+    logo_url: 'a',
     id: 5
   },
   {
     name: 'Velez Sarsfield',
-    logo: 'a',
+    logo_url: 'a',
     id: 6
   },
   {
     name: 'Estudiantes',
-    logo: '',
+    logo_url: '',
     id: 7
   },
   {
     name: 'Lanus',
-    logo: '',
+    logo_url: '',
     id: 8
   },
   {
     name: 'Rosario Central',
-    logo: '',
+    logo_url: '',
     id: 9
   }];
 

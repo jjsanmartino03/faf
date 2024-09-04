@@ -3,7 +3,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from faf_api.models import Teams
+from faf_api.models import Teams, Categories, TeamCategories
 
 
 # Create your views here.
@@ -24,7 +24,13 @@ class TeamsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Teams
         fields = '__all__'
-        
+
+
+class TeamCategoriesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TeamCategories
+        # returnn category.year too
+        fields = ['id', 'category']
 
 
 class TeamsViewSet(viewsets.ModelViewSet):
@@ -33,6 +39,38 @@ class TeamsViewSet(viewsets.ModelViewSet):
 
     queryset = Teams.objects.all()
     serializer_class = TeamsSerializer
+
+    # overwrite the team create endpoint
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        team = Teams.objects.create(name=data['name'], logo_url=data['logo_url'])
+        team.save()
+
+        categories = Categories.objects.filter(active=True)
+
+        for category in categories:
+            team_category = TeamCategories.objects.create(team=team, category=category)
+            team_category.save()
+
+        return Response({'id': team.id, 'name': team.name})
+
+    def retrieve(self, request, *args, **kwargs):
+        team: Teams = self.get_object()
+
+        categories = TeamCategories.objects.filter(team=team)
+        team_data = TeamsSerializer(team).data
+
+        categories_data = []
+        for category in categories:
+            categories_data.append({
+                'id': category.id,
+                'category': category.category.year
+            })
+
+        team_data['categories'] = categories_data
+
+        return Response(team_data)
 
 
 router = routers.DefaultRouter()

@@ -20,9 +20,9 @@ const username = ref('');
 const password = ref('');
 
 if (authStore.isAuthenticated) {
-  router.push({
+  /*router.push({
     name: 'teams'
-  })
+  })*/
 }
 
 
@@ -31,9 +31,17 @@ async function login(e) {
   const result = await authStore.login(username.value, password.value)
 
   if (result) {
-    await router.push('/teams')
+    await router.push({
+      name: 'teams'
+    })
   }
 }
+
+const onKeydown = (e) => {
+  if (e.key === 'Enter') {
+    login(e);
+  }
+};
 
 </script>
 
@@ -54,40 +62,37 @@ async function login(e) {
           </div>
         </template>
         <template #content>
-          <div class="p-fluid">
-            <div class="p-field">
-              <FloatLabel>
-                <InputText id="username" v-model="username"/>
-                <label for="username">Usuario</label>
-              </FloatLabel>
-            </div>
-            <div class="p-field mt-4">
-              <FloatLabel>
-                <InputText id="password" v-model="password" type="password"/>
-                <label for="password">Clave</label>
-              </FloatLabel>
-            </div>
-            <div class="mt-2">
-              <span  v-if="authStore.status == 'error'" class="text-red-500 pt-4">
+          <form @submit.prevent="login" @keydown="onKeydown">
+            <div class="p-fluid">
+              <div class="p-field">
+                <FloatLabel>
+                  <InputText id="username" v-model="username"/>
+                  <label for="username">Usuario</label>
+                </FloatLabel>
+              </div>
+              <div class="p-field mt-4">
+                <FloatLabel>
+                  <InputText id="password" v-model="password" type="password"/>
+                  <label for="password">Clave</label>
+                </FloatLabel>
+              </div>
+              <div class="mt-2">
+              <span v-if="authStore.status == 'error'" class="text-red-500 pt-4">
                 Usuario y/o contraseña inválidos. Intente nuevamente
               </span>
-            </div>
-            <div class="mt-2">
+              </div>
+              <div class="mt-4">
               <span v-if="authStore.status!='loading'">
-                                <Button label="Entrar" @click="login"/>
+                                <Button label="Entrar" type="submit" />
               </span>
-              <span v-else>
+                <span v-else>
                 <div class="flex justify-content-center">
                     <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;"/>
                 </div>
             </span>
+              </div>
             </div>
-          </div>
-          <div class="flex justify-content-end mt-4">
-            <a href="#" class="text-primary no-underline">
-              ¿Olvidaste tu clave?
-            </a>
-          </div>
+          </form>
         </template>
       </Card>
     </div>
