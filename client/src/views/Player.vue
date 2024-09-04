@@ -36,8 +36,10 @@ const categoryYear = route.params.categoryYear
 const team = mockTeams.find(team => team.id == teamId)
 
 const items = ref([
+  {label: 'Equipos', url: '/teams'},
   {label: team.name, url: '/teams/' + team.id},
   {label: 'Categoría ' + categoryYear, url: '/teams/' + team.id + '/categories/' + categoryYear},
+  {label: player.name}
 ])
 
 </script>
