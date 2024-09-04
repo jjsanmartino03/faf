@@ -3,7 +3,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from faf_api.models import Teams, Categories, TeamCategories
+from faf_api.models import Teams, Players, Categories, TeamCategories
 
 
 # Create your views here.
@@ -72,7 +72,22 @@ class TeamsViewSet(viewsets.ModelViewSet):
 
         return Response(team_data)
 
+class PlayersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Players
+        fields = '__all__'
+
+class PlayersViewSet(viewsets.ModelViewSet):
+    authentication_classes = []
+    permission_classes = []
+
+    queryset = Players.objects.all()
+    serializer_class = PlayersSerializer
+
+
+
 
 router = routers.DefaultRouter()
 router.register(r'teams', TeamsViewSet)
+router.register(r'players', PlayersViewSet)
 router.register(r'user', GetAuthenticatedUser, basename='user')
