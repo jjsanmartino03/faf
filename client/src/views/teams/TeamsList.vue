@@ -31,12 +31,12 @@ const teams = computed(() => teamsStore.teams)
         <CreateTeamDialog
         />
       </div>
-      <div class="flex gap-2">
+<!--      <div class="flex gap-2">
         <InputGroup>
           <InputText placeholder="Ingresa tu búsqueda..."/>
           <Button label="Buscar"/>
         </InputGroup>
-      </div>
+      </div>-->
 
     </header>
     <DataTable :loading="teamsStore.statusGetTeams == 'loading'" :value="teamsStore.teams"

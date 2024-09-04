@@ -42,8 +42,8 @@ const onSubmit = async (e) => {
         </FloatLabel>
       </div>
       <div v-if="statusCreateTeam != 'loading'" class="flex justify-end gap-2 mt-4">
-        <Button type="button" label="Cancel" severity="secondary" @click="visible = false"></Button>
-        <Button type="submit" label="Save"></Button>
+        <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+        <Button type="submit" label="Guardar"></Button>
       </div>
       <div v-else class="flex justify-content-center">
         <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;"/>
