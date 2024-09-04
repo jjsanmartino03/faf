@@ -1,4 +1,5 @@
 <script setup>
+import Dialog from 'primevue/dialog'
 import {useRoute} from "vue-router";
 import Breadcrumb from "primevue/breadcrumb";
 import Button from "primevue/button";
@@ -15,12 +16,17 @@ const categoryYear = route.params.categoryYear;
 
 const team = mockTeams.find(team => team.id == route.params.teamId);
 
+const visible = ref(false);
 
 const items = ref([
   {label: 'Equipos', url: '/teams'},
   {label: team.name, url: '/teams/' + team.id},
   {label: 'Categoría ' + categoryYear}
 ])
+
+const toggleVisible = ()=>{
+  visible.value=!visible.value
+}
 </script>
 
 <template>
@@ -29,7 +35,7 @@ const items = ref([
       <Breadcrumb class="py-2 px-0" :model="items"></Breadcrumb>
       <div class="flex pt-2 gap-2 justify-content-between pb-2 align-items-start ">
         <h1 class="mt-0">Categoría {{ categoryYear }}</h1>
-        <Button label="Nuevo Jugador" icon="pi pi-plus" size="small"/>
+        <Button label="Nuevo Jugador" icon="pi pi-plus" size="small" @click="toggleVisible"/>
       </div>
       <div class="flex gap-2">
         <InputGroup>
@@ -58,4 +64,15 @@ const items = ref([
       </Column>
     </DataTable>
   </main>
+
+<Dialog v-model:visible="visible" modal header="Crear Nuevo Jugador" :style="{ width: '25rem' }">
+    <div class="flex items-center gap-4 mb-4">
+        <label for="playername" class="font-semibold w-24">Nombre</label>
+        <InputText id="playername" class="flex-auto" autocomplete="off" />
+    </div>
+    <div class="flex justify-end gap-2">
+        <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+        <Button type="button" label="Guardar" @click="visible = false"></Button>
+    </div>
+</Dialog>
 </template>

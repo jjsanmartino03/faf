@@ -42,7 +42,7 @@ class Matches(models.Model):
 class Players(models.Model):
     id = models.BigAutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    status = models.CharField(max_length=100)
+    status = models.BooleanField(default=True)
     team_category = models.ForeignKey('TeamCategories', models.DO_NOTHING)
 
     class Meta:
