@@ -34,8 +34,8 @@ class TeamCategoriesSerializer(serializers.ModelSerializer):
 
 
 class TeamsViewSet(viewsets.ModelViewSet):
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    authentication_classes = []
+    permission_classes = []
 
     queryset = Teams.objects.all()
     serializer_class = TeamsSerializer
