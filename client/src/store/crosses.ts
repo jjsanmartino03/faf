@@ -43,10 +43,15 @@ export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineS
   const statusGetCross = ref<'loading' | 'success' | 'error' | 'idle'>('idle')
   const toast = useToast();
 
-  async function getCrosses() {
+  async function getCrosses(keyword: string) {
     try {
       statusGetCrosses.value = 'loading'
-      crosses.value = await api.get<Cross[]>("api/crosses/")
+      const params: { team_name?: string } = {}
+      if (keyword) {
+        params.team_name = keyword
+      }
+
+      crosses.value = await api.get<Cross[]>("api/crosses/", params)
       statusGetCrosses.value = 'success'
     } catch (e) {
       statusGetCrosses.value = 'error'

@@ -101,12 +101,17 @@ class CrossesViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         query_params = request.query_params
 
-        crosses = Crosses.objects.filter(date__gte=datetime.now())
+        crosses = Crosses.objects.filter(date__gte=datetime.now()).order_by('date')
 
         team_id = query_params.get('team_id')
         if team_id:
             crosses = crosses.filter(
                 Q(local_team_id=team_id) | Q(visitor_team_id=team_id))
+
+        team_name = query_params.get('team_name')
+        if team_name:
+            crosses = crosses.filter(
+                    Q(local_team__name__icontains=team_name) | Q(visitor_team__name__icontains=team_name))
 
         date_to_string = query_params.get('date_to')
         if date_to_string:
