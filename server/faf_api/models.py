@@ -70,7 +70,7 @@ class Teams(models.Model):
 class Validation(models.Model):
     id = models.BigAutoField(primary_key=True)
     status = models.CharField(max_length=100)
-    photo = models.CharField(max_length=255)
+    photo = models.CharField(max_length=255, null=True)
 
     class Meta:
         db_table = 'validation'
