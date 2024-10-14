@@ -14,7 +14,7 @@ const Teams = () => import("./views/teams/TeamsList.vue");
 const Team = () => import("./views/teams/Team.vue");
 const Category = () => import("./views/teams/Category.vue");
 const Player = () => import("./views/Player.vue");
-const MatchList = () => import("./views/Match/Match-list.vue");
+const MatchList = () => import("./views/crosses/Cross-list.vue");
 
 const routes: RouteRecordRaw[] = [
   {

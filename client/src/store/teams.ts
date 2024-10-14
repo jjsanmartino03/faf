@@ -4,6 +4,7 @@ import {useToast} from "primevue/usetoast";
 import {ref} from "vue";
 
 export type Team = {
+  id: number
   name: string
   logo_url: string
 }

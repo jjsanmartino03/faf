@@ -1,0 +1,71 @@
+import {Team} from "./teams.ts";
+import {defineStore, StoreDefinition} from "pinia";
+import {ref} from "vue";
+import api from "../services/api.ts";
+import {useToast} from "primevue/usetoast";
+
+export type Validation = {
+  id: number
+  status: string
+  photo: string | null
+}
+export type Match = {
+  id: number
+  local_validation: Validation
+  visitor_validation: Validation
+  category: number
+  cross: number
+  local_team_category: number
+  visitor_team_category: number
+}
+
+export type Cross = {
+  id: number
+  date: `${number}-${number}-${number}`
+  local_team: Team
+  visitor_team: Team
+  matches: Match[]
+}
+
+type MatchesStore = {
+  crosses: Cross[] | null
+  cross: Cross | null
+  statusGetCrosses: 'loading' | 'success' | 'error' | 'idle'
+  statusCreateCross: 'loading' | 'success' | 'error' | 'idle'
+  statusGetCross: 'loading' | 'success' | 'error' | 'idle'
+}
+
+export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineStore('matches', () => {
+  const crosses = ref<Cross[] | null>(null)
+  const cross = ref<Cross | null>(null)
+  const statusGetCrosses = ref<'loading' | 'success' | 'error' | 'idle'>('idle')
+  const statusCreateCross = ref<'loading' | 'success' | 'error' | 'idle'>('idle')
+  const statusGetCross = ref<'loading' | 'success' | 'error' | 'idle'>('idle')
+  const toast = useToast();
+
+  async function getCrosses() {
+    try {
+      statusGetCrosses.value = 'loading'
+      crosses.value = await api.get<Cross[]>("api/crosses/")
+      statusGetCrosses.value = 'success'
+    } catch (e) {
+      statusGetCrosses.value = 'error'
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al obtener los partidos',
+        life: 3000
+      });
+    }
+  }
+
+  return {
+    crosses,
+    cross,
+    statusGetCrosses,
+    statusCreateCross,
+    statusGetCross,
+    getCrosses
+  }
+
+})
