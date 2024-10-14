@@ -19,10 +19,10 @@ export const usePlayersStore = defineStore("players", () => {
   const statusCreatePlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
   const statusGetPlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 
-  async function getPlayers() {
+  async function getPlayers(team_category=null) {
     try {
       statusGetPlayers.value = 'loading';
-      players.value = await api.get<Player[]>("api/players/");
+      players.value = await api.get<Player[]>("api/players/", { team_category });
       statusGetPlayers.value = 'success';
     } catch (e) {
       statusGetPlayers.value = 'error';

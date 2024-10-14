@@ -13,7 +13,7 @@ class ApiClient {
 
 
   async get<ResponseBodyType = any, Params = any>(url, params: Params | null = null): Promise<ResponseBodyType> {
-    return await this.request<ResponseBodyType>('get', url)
+    return await this.request<ResponseBodyType>('get', url, params  )
   }
 
   async post<ResponseBodyType = any>(url, data): Promise<ResponseBodyType> {

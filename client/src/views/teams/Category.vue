@@ -1,7 +1,7 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
 import {useRoute} from "vue-router";
-import { useToast } from "primevue/usetoast";
+import {useToast} from "primevue/usetoast";
 
 import Dialog from 'primevue/dialog'
 import Breadcrumb from "primevue/breadcrumb";
@@ -13,35 +13,31 @@ import DataTable from "primevue/datatable";
 import Column from "primevue/column";
 import ProgressSpinner from "primevue/progressspinner";
 import FloatLabel from "primevue/floatlabel";
-import Toast from 'primevue/toast';
 import Avatar from 'primevue/avatar';
 
-
-import {mockTeams} from "../../mocks/teams";
-import {mockPlayers} from "../../mocks/players";
-
 import {usePlayersStore} from "../../store/players";
+import {useTeamsStore} from "../../store/teams";
 
-const toast = useToast();
 const route = useRoute();
-const categoryYear = route.params.categoryYear;
-
+console.log(route.params.categoryYear);
 const playersStore = usePlayersStore()
 
-const team = mockTeams.find(team => team.id == route.params.teamId);
-
+const teamsStore = useTeamsStore()
+const team = computed(() => teamsStore.team)
 const visible = ref(false);
 
-const items = ref([
-  {label: 'Equipos', url: '/teams'},
-  {label: team.name, url: '/teams/' + team.id},
-  {label: 'Categoría ' + categoryYear}
-])
+const categoryYear = computed(() => (team.value ? team.value.categories.find(category => category.id == route.params.categoryYear).category : ''), [team]);
 
+const items = computed(() => [
+  {label: 'Equipos', url: '/teams'},
+  {label: team.value ? team.value.name : '', url: '/teams/' + (team.value ? team.value.id : '')},
+  {label: 'Categoría ' + categoryYear.value}
+], [team])
+console.log(categoryYear);
 const name = ref('');
 
-const toggleVisible = ()=>{
-  visible.value=!visible.value
+const toggleVisible = () => {
+  visible.value = !visible.value
 }
 
 const players = computed(() => playersStore.players)
@@ -56,7 +52,7 @@ const onSubmit = async (e) => {
   e.preventDefault()
   await playersStore.createPlayer({
     name: name.value,
-    team_category: parseInt(categoryYear),
+    team_category: parseInt(route.params.categoryYear),
   })
   await playersStore.getPlayers()
   setStatePlayers()
@@ -64,7 +60,8 @@ const onSubmit = async (e) => {
   name.value = ''
 }
 
-onMounted( async () => {
+onMounted(async () => {
+  await teamsStore.getTeam(route.params.teamId)
   await playersStore.getPlayers()
   setStatePlayers()
 })
@@ -74,7 +71,7 @@ onMounted( async () => {
 <template>
   <main class="flex flex-column justify-content-center align-items-center h-full px-4 gap-4">
     <header class="w-full">
-      <Breadcrumb class="py-2 px-0" :model="items" >
+      <Breadcrumb class="py-2 px-0" :model="items">
       </Breadcrumb>
       <div class="flex pt-2 gap-2 justify-content-between pb-2 align-items-start ">
         <h1 class="mt-0">Categoría {{ categoryYear }}</h1>
@@ -91,7 +88,7 @@ onMounted( async () => {
     <DataTable :value="players" table-style="min-width: 100%; width: 100%" class="w-full">
       <Column header="Foto" class="w-2">
         <template #body="slotProps">
-          <Avatar icon="pi pi-user" class="mr-2" size="xlarge" shape="circle" />
+          <Avatar icon="pi pi-user" class="mr-2" size="xlarge" shape="circle"/>
         </template>
       </Column>
       <Column sortable field="name" header="Nombre" body-class="font-bold"></Column>
@@ -111,7 +108,7 @@ onMounted( async () => {
     </DataTable>
   </main>
 
-<Dialog v-model:visible="visible" modal header="Crear Nuevo Jugador" :style="{ width: '25rem' }">
+  <Dialog v-model:visible="visible" modal header="Crear Nuevo Jugador" :style="{ width: '25rem' }">
     <form @submit.prevent="onSubmit" class="flex flex-column w-full align-items-center justify-content-center">
       <div class="p-field mt-4">
         <FloatLabel>
@@ -127,5 +124,5 @@ onMounted( async () => {
         <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;"/>
       </div>
     </form>
-</Dialog>
+  </Dialog>
 </template>

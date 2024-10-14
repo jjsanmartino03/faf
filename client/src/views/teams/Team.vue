@@ -7,6 +7,7 @@ import DataTable from "primevue/datatable";
 import {mockCategories} from "../../mocks/categories.ts";
 import {useTeamsStore} from "../../store/teams";
 import ProgressSpinner from "primevue/progressspinner";
+import Breadcrumb from "primevue/breadcrumb";
 
 const route = useRoute()
 
@@ -19,12 +20,23 @@ onMounted(async () => {
   teamsStore.getTeam(teamId)
 })
 
+const items = computed(() => [
+  {label: 'Home', url: '/'},
+  {label: 'Equipos', url: '/teams'},
+  {label: team.value ? team.value.name : '', url: '/teams/' + teamId},
+])
+
 </script>
 <template>
   <main v-if="team" class="flex w-full flex-column justify-content-center align-items-center h-full px-4 gap-4 pt-2">
-    <header class="w-full flex gap-4 align-items-center">
+
+    <header class="w-full">
+      <Breadcrumb class="py-2 px-0" :model="items">
+      </Breadcrumb>
+      <div class="flex gap-4 justify-content-start pb-2 center ">
       <img :src="team.logo_url" :alt="team.logo_url" class="w-6rem border-round"/>
       <h1>{{ team.name }}</h1>
+      </div>
     </header>
     <div class="w-full">
       <h2>Categorías</h2>
