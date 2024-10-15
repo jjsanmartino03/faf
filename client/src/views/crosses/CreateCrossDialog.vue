@@ -67,8 +67,6 @@ const clear = () => {
         <label>Equipo visitante</label>
         <TeamSelect v-model="visitorTeam" :status-get-teams="statusGetTeams"/>
       </div>
-      <p>{{ crossesStore.statusCreateCross }}</p>
-      <p>{{ status }}</p>
       <div class="p-field w-full">
         <Calendar :min-date="new Date()" placeholder="Elige una fecha" class="w-full" v-model="date"
                   dateFormat="dd/mm/yy" showIcon/>

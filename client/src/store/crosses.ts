@@ -87,8 +87,6 @@ export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineS
       }
     }
 
-    console.log(statusCreateCross, 'statusCreateCross')
-
     return {
       crosses,
       cross,
