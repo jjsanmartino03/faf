@@ -7,6 +7,7 @@ import {useCrossesStore} from "../../store/crosses";
 import {computed, onMounted, ref} from "vue";
 import ProgressSpinner from "primevue/progressspinner";
 import CreateCrossDialog from "./CreateCrossDialog.vue";
+import {useAuthStore} from "../../store/auth.ts";
 
 const matches: MatchDto[] = [
   {
@@ -79,6 +80,7 @@ interface MatchDto {
 }
 
 const store = useCrossesStore();
+const authStore = useAuthStore()
 onMounted(async () => {
   store.getCrosses();
 })
@@ -109,7 +111,7 @@ const onKeydown = (e) => {
           </InputGroup>
           <Button class="h-auto" aria-label="reload" icon="pi pi-refresh" @click="store.getCrosses()"/>
         </div>
-        <div class="w-full">
+        <div v-if="authStore.isAdmin" class="w-full">
           <CreateCrossDialog :on-create-cross="search"/>
         </div>
       </div>

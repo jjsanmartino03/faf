@@ -22,7 +22,7 @@ onMounted(() => {
 const teams = computed(() => teamsStore.teams)
 
 const items = computed(() => [
-  {label: 'Home', url: '/'},
+  {label: 'Home', url: '/home'},
   {label: 'Equipos', url: '/teams'},
 ])
 </script>

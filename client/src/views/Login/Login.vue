@@ -32,7 +32,7 @@ async function login(e) {
 
   if (result) {
     await router.push({
-      name: 'teams'
+      name: 'home'
     })
   }
 }

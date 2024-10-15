@@ -2,6 +2,7 @@ from datetime import datetime
 from pprint import pprint
 
 from django.db.models import Q
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework import serializers, viewsets
 
@@ -41,7 +42,7 @@ class CrossesSerializer(serializers.ModelSerializer):
 
 
 class CrossesViewSet(viewsets.ModelViewSet):
-    authentication_classes = []
+    authentication_classes = [TokenAuthentication]
     permission_classes = []
 
     queryset = Crosses.objects.all()
@@ -61,7 +62,7 @@ class CrossesViewSet(viewsets.ModelViewSet):
             print(parsed_date)
             print(datetime.now().replace(hour=0, minute=0, second=0, microsecond=0))
             if parsed_date < datetime.now().replace(hour=0, minute=0, second=0, microsecond=0):
-                return Response({'error': 'Invalid date', 'date': parsed_date,}, status=400)
+                return Response({'error': 'Invalid date', 'date': parsed_date, }, status=400)
         except ValueError:
             return Response({'error': 'Invalid date format'}, status=400)
 
@@ -106,7 +107,9 @@ class CrossesViewSet(viewsets.ModelViewSet):
 
         crosses = Crosses.objects.filter(date__gte=datetime.now()).order_by('date')
 
-        team_id = query_params.get('team_id')
+        user = request.user
+
+        team_id = user.team_id if user else query_params.get('team_id')
         if team_id:
             crosses = crosses.filter(
                 Q(local_team_id=team_id) | Q(visitor_team_id=team_id))

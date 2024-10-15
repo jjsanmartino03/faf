@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, PropType, computed} from 'vue';
+import {defineProps, PropType, computed, onMounted} from 'vue';
 
 import Card from 'primevue/card';
 import Panel from "primevue/panel";
@@ -7,6 +7,7 @@ import Button from 'primevue/button';
 import {Cross} from "../../store/crosses.ts";
 import {getDateFromString} from "../../utils/dates.ts";
 import {ValidationStatus} from "../../utils/constants.ts";
+import {useAuthStore} from "../../store/auth.ts";
 
 const props = defineProps({
   cross: {
@@ -14,6 +15,8 @@ const props = defineProps({
     required: true
   }
 });
+
+const authStore = useAuthStore();
 
 const borderClass = computed(() => {
   return 'border-1 border-left-3 border-primary';
@@ -30,6 +33,12 @@ const borderClass = computed(() => {
       return '';
   }
 });
+
+console.log(authStore.user)
+const isAdmin = computed(() => authStore.isAdmin);
+
+const userTeamId = computed(() => authStore.user?.team_id ?? null);
+console.log(isAdmin.value)
 
 const getIconClassFromStatus = (status: string) => {
   switch (status) {
@@ -88,13 +97,13 @@ const getSeverityFromStatus = (status: string) => {
         <ul class="m-0 p-0 match-list">
           <li v-for="match in cross.matches" :key="match.id" class="match-list-item align-items-center pt-3 pb-2">
             <div class="grid align-items-center justify-content-center">
-              <div class="col-4">Cat. {{ match.category }}</div>
-              <div class="col-3 text-center">
+              <div :class="isAdmin ? 'col-4' : 'col-6 text-center'">{{isAdmin ? 'Cat.' : 'Categoría'}} {{ match.category }}</div>
+              <div v-if="isAdmin || userTeamId === cross.local_team.id" class="col-3 text-center">
                 <Button :severity="getSeverityFromStatus(match.local_validation.status)"
                         :icon="getIconClassFromStatus(match.local_validation.status)"/>
               </div>
-              <div class="col-2 text-center">vs</div>
-              <div class="col-3 text-center">
+              <div v-if="isAdmin" class="col-2 text-center">vs</div>
+              <div v-if="isAdmin || userTeamId === cross.visitor_team.id" class="col-3 text-center">
                 <Button :severity="getSeverityFromStatus(match.visitor_validation.status)"
                         :icon="getIconClassFromStatus(match.visitor_validation.status)"/>
               </div>

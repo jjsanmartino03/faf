@@ -21,7 +21,7 @@ onMounted(async () => {
 })
 
 const items = computed(() => [
-  {label: 'Home', url: '/'},
+  {label: 'Home', url: '/home'},
   {label: 'Equipos', url: '/teams'},
   {label: team.value ? team.value.name : '', url: '/teams/' + teamId},
 ])
