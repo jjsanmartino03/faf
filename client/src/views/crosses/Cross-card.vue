@@ -59,7 +59,7 @@ const getSeverityFromStatus = (status: string) => {
 </script>
 
 <template>
-  <Card :class="borderClass + ''">
+  <Card :class="borderClass + ' w-full'">
     <template #content>
       <div class="grid align-items-center align-content-center justify-content-center">
         <div class="col-3">

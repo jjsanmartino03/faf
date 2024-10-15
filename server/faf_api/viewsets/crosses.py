@@ -53,12 +53,15 @@ class CrossesViewSet(viewsets.ModelViewSet):
         if not data.get('date') or not data.get('local_team_id') or not data.get('visitor_team_id'):
             return Response({'error': 'Missing data'}, status=400)
 
-        # validate if date is parseable and is in the future
+        # validate if date is parseable and is at least today
         date_string = data.get('date')
         try:
-            parsed_date = datetime.strptime(date_string, '%Y-%m-%d')
-            if parsed_date <= datetime.now():
-                return Response({'error': 'Date must be in the future'}, status=400)
+            parsed_date = datetime.strptime(date_string + ' 00:00:00', '%Y-%m-%d %H:%M:%S')
+
+            print(parsed_date)
+            print(datetime.now().replace(hour=0, minute=0, second=0, microsecond=0))
+            if parsed_date < datetime.now().replace(hour=0, minute=0, second=0, microsecond=0):
+                return Response({'error': 'Invalid date', 'date': parsed_date,}, status=400)
         except ValueError:
             return Response({'error': 'Invalid date format'}, status=400)
 
@@ -82,8 +85,8 @@ class CrossesViewSet(viewsets.ModelViewSet):
             local_team_category = TeamCategories.objects.get(team_id=cross.local_team_id, category_id=category.id)
             visitor_team_category = TeamCategories.objects.get(team_id=cross.visitor_team_id, category_id=category.id)
 
-            local_validation = Validation.objects.create(status=ValidationStatus.PENDING, photo=None)
-            visitor_validation = Validation.objects.create(status=ValidationStatus.PENDING, photo=None)
+            local_validation = Validation.objects.create(status=ValidationStatus.PENDING.value, photo=None)
+            visitor_validation = Validation.objects.create(status=ValidationStatus.PENDING.value, photo=None)
 
             match = Matches.objects.create(
                 cross=cross,
@@ -111,7 +114,7 @@ class CrossesViewSet(viewsets.ModelViewSet):
         team_name = query_params.get('team_name')
         if team_name:
             crosses = crosses.filter(
-                    Q(local_team__name__icontains=team_name) | Q(visitor_team__name__icontains=team_name))
+                Q(local_team__name__icontains=team_name) | Q(visitor_team__name__icontains=team_name))
 
         date_to_string = query_params.get('date_to')
         if date_to_string:
