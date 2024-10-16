@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, PropType, computed, onMounted} from 'vue';
+import {defineProps, PropType, computed} from 'vue';
 
 import Card from 'primevue/card';
 import Panel from "primevue/panel";
@@ -97,7 +97,9 @@ const getSeverityFromStatus = (status: string) => {
         <ul class="m-0 p-0 match-list">
           <li v-for="match in cross.matches" :key="match.id" class="match-list-item align-items-center pt-3 pb-2">
             <div class="grid align-items-center justify-content-center">
-              <div :class="isAdmin ? 'col-4' : 'col-6 text-center'">{{isAdmin ? 'Cat.' : 'Categoría'}} {{ match.category }}</div>
+              <div :class="isAdmin ? 'col-4' : 'col-6 text-center'">{{ isAdmin ? 'Cat.' : 'Categoría' }}
+                {{ match.category }}
+              </div>
               <div v-if="isAdmin || userTeamId === cross.local_team.id" class="col-3 text-center">
                 <Button :severity="getSeverityFromStatus(match.local_validation.status)"
                         :icon="getIconClassFromStatus(match.local_validation.status)"/>
