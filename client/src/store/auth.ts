@@ -18,7 +18,6 @@ type AuthStore = {
   isAuthenticated: boolean
   user: User | null
   status: 'loading' | 'success' | 'error' | 'idle'
-  isAdmin: boolean
 }
 
 export const useAuthStore: StoreDefinition<"auth", AuthStore> = defineStore('auth', () => {
@@ -26,7 +25,7 @@ export const useAuthStore: StoreDefinition<"auth", AuthStore> = defineStore('aut
   const isAuthenticated = ref<boolean>(localStorage.getItem('token') !== null)
   const user = ref<User | null>(null)
   const status = ref<'loading' | 'success' | 'error' | 'idle'>('idle')
-  const isAdmin = user.value?.is_staff || false
+  const isAdmin = computed(() => user.value?.is_staff || false)
 
   async function login(username, password) {
 
