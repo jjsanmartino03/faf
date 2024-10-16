@@ -28,14 +28,14 @@ const items = computed(() => [
 
 </script>
 <template>
-  <main v-if="team" class="flex w-full flex-column justify-content-center align-items-center h-full px-4 gap-4 pt-2">
+  <main v-if="team" class="flex w-full flex-column justify-content-start align-items-center h-full gap-4">
 
     <header class="w-full">
       <Breadcrumb class="py-2 px-0" :model="items">
       </Breadcrumb>
       <div class="flex gap-4 justify-content-start pb-2 center ">
-      <img :src="team.logo_url" :alt="team.logo_url" class="w-6rem border-round"/>
-      <h1>{{ team.name }}</h1>
+        <img :src="team.logo_url" :alt="team.logo_url" class="w-6rem border-round"/>
+        <h1>{{ team.name }}</h1>
       </div>
     </header>
     <div class="w-full">

@@ -54,7 +54,7 @@ const onSubmit = async (e) => {
     name: name.value,
     team_category: parseInt(route.params.categoryYear),
   })
-  await playersStore.getPlayers()
+  await playersStore.getPlayers(parseInt(route.params.categoryYear))
   setStatePlayers()
   visible.value = false
   name.value = ''
@@ -62,14 +62,14 @@ const onSubmit = async (e) => {
 
 onMounted(async () => {
   await teamsStore.getTeam(route.params.teamId)
-  await playersStore.getPlayers()
+  await playersStore.getPlayers(parseInt(route.params.categoryYear))
   setStatePlayers()
 })
 
 </script>
 
 <template>
-  <main class="flex flex-column justify-content-center align-items-center h-full px-4 gap-4">
+  <main class="flex flex-column justify-content-start align-items-center h-full">
     <header class="w-full">
       <Breadcrumb class="py-2 px-0" :model="items">
       </Breadcrumb>

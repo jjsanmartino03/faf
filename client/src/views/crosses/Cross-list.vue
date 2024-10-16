@@ -100,39 +100,35 @@ const onKeydown = (e) => {
 
 </script>
 <template>
-  <main class="flex flex-column align-items-center">
-    <div class="p-2 gap-3 flex flex-column sm:w-full lg:w-6">
-      <h1 class="text-center my-2">Próximos Cruces</h1>
-      <div class="flex flex-column gap-2">
-        <div class="flex gap-2 justify-content-center w-full">
-          <InputGroup>
-            <Input @keydown="onKeydown" v-model="keyword" placeholder="Buscar"/>
-            <Button @click="search()">Buscar</Button>
-          </InputGroup>
-          <Button class="h-auto" aria-label="reload" icon="pi pi-refresh" @click="store.getCrosses()"/>
-        </div>
-        <div v-if="authStore.isAdmin" class="w-full">
-          <CreateCrossDialog :on-create-cross="search"/>
-        </div>
-      </div>
-      <div class="flex">
-        <div class="flex justify-content-center" style="width: 100%;">
-          <div v-if="store.statusGetCrosses == 'loading'  " class="bg-white w-full h-full flex justify-content-center">
-            <ProgressSpinner strokeWidth="4" style="width: 4rem; height: 4rem;"/>
-          </div>
-          <div v-if="store.statusGetCrosses == 'success'" class="w-full">
-            <div v-if="crosses && crosses.length" class="w-full">
-              <Cross v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3"/>
-            </div>
-            <div v-else>
-              <div class="text-center">No se encontraron partidos</div>
-            </div>
-          </div>
-
-        </div>
-      </div>
+  <h1 class="text-center my-2">Próximos Cruces</h1>
+  <div class="flex flex-column gap-2">
+    <div class="flex gap-2 justify-content-center w-full">
+      <InputGroup>
+        <Input @keydown="onKeydown" v-model="keyword" placeholder="Buscar"/>
+        <Button @click="search()">Buscar</Button>
+      </InputGroup>
+      <Button class="h-auto" aria-label="reload" icon="pi pi-refresh" @click="store.getCrosses()"/>
     </div>
-  </main>
+    <div v-if="authStore.isAdmin" class="w-full">
+      <CreateCrossDialog :on-create-cross="search"/>
+    </div>
+  </div>
+  <div class="flex">
+    <div class="flex justify-content-center" style="width: 100%;">
+      <div v-if="store.statusGetCrosses == 'loading'  " class="bg-white w-full h-full flex justify-content-center">
+        <ProgressSpinner strokeWidth="4" style="width: 4rem; height: 4rem;"/>
+      </div>
+      <div v-if="store.statusGetCrosses == 'success'" class="w-full">
+        <div v-if="crosses && crosses.length" class="w-full">
+          <Cross v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3"/>
+        </div>
+        <div v-else>
+          <div class="text-center">No se encontraron partidos</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
 </template>
 
 <style scoped>
