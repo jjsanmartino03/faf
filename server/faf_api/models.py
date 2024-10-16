@@ -5,7 +5,16 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+
+
+class Users(AbstractUser):
+    team = models.ForeignKey('Teams', models.DO_NOTHING, null=True)
+
+    class Meta:
+        db_table = 'users'
+
 
 class Categories(models.Model):
     id = models.BigAutoField(primary_key=True)
@@ -30,9 +39,11 @@ class Matches(models.Model):
     id = models.BigAutoField(primary_key=True)
     cross = models.ForeignKey(Crosses, models.DO_NOTHING)
     local_team_category = models.ForeignKey('TeamCategories', models.DO_NOTHING)
-    visitor_team_category = models.ForeignKey('TeamCategories', models.DO_NOTHING, related_name='matches_visitor_team_category_set')
+    visitor_team_category = models.ForeignKey('TeamCategories', models.DO_NOTHING,
+                                              related_name='matches_visitor_team_category_set')
     local_validation = models.ForeignKey('Validation', models.DO_NOTHING)
-    visitor_validation = models.ForeignKey('Validation', models.DO_NOTHING, related_name='matches_visitor_validation_set')
+    visitor_validation = models.ForeignKey('Validation', models.DO_NOTHING,
+                                           related_name='matches_visitor_validation_set')
     category = models.IntegerField()
 
     class Meta:
@@ -70,7 +81,7 @@ class Teams(models.Model):
 class Validation(models.Model):
     id = models.BigAutoField(primary_key=True)
     status = models.CharField(max_length=100)
-    photo = models.CharField(max_length=255)
+    photo = models.CharField(max_length=255, null=True)
 
     class Meta:
         db_table = 'validation'

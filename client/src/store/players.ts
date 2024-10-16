@@ -1,14 +1,14 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import {defineStore} from "pinia";
+import {ref} from "vue";
 import api from "../services/api.ts";
-import { useToast } from "primevue/usetoast";
+import {useToast} from "primevue/usetoast";
 
 export type Player = {
-    id: number
-    name: string
-    team_category: number
-    status: boolean
-    status_text: string
+  id: number
+  name: string
+  team_category: number
+  status: boolean
+  status_text: string
 };
 
 export const usePlayersStore = defineStore("players", () => {
@@ -19,10 +19,10 @@ export const usePlayersStore = defineStore("players", () => {
   const statusCreatePlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
   const statusGetPlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 
-  async function getPlayers(team_category=null) {
+  async function getPlayers(team_category = null) {
     try {
       statusGetPlayers.value = 'loading';
-      players.value = await api.get<Player[]>("api/players/", { team_category });
+      players.value = await api.get<Player[]>("api/players/", {team_category_id: team_category});
       statusGetPlayers.value = 'success';
     } catch (e) {
       statusGetPlayers.value = 'error';
@@ -34,10 +34,15 @@ export const usePlayersStore = defineStore("players", () => {
     try {
       await api.post("api/players/", player);
       statusCreatePlayer.value = 'success';
-        toast.add({ severity: 'success', summary: 'Juegador creado', detail: 'El jugador ha sido creado correctamente', life: 3000 });
+      toast.add({
+        severity: 'success',
+        summary: 'Juegador creado',
+        detail: 'El jugador ha sido creado correctamente',
+        life: 3000
+      });
     } catch (e) {
       statusCreatePlayer.value = 'error';
-        toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el jugador', life: 3000 });
+      toast.add({severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el jugador', life: 3000});
     }
   }
 
