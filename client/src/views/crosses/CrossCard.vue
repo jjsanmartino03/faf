@@ -8,11 +8,16 @@ import {Cross} from "../../store/crosses.ts";
 import {getDateFromString} from "../../utils/dates.ts";
 import {ValidationStatus} from "../../utils/constants.ts";
 import {useAuthStore} from "../../store/auth.ts";
+import CreateCrossDialog from "./CreateCrossDialog.vue";
 
 const props = defineProps({
   cross: {
     type: Object as PropType<Cross>,
     required: true
+  },
+  onUpdate: {
+    type: Function as PropType<() => void>,
+    required: false
   }
 });
 
@@ -71,8 +76,10 @@ const getSeverityFromStatus = (status: string) => {
   <Card :class="borderClass + ' w-full'">
     <template #content>
       <div class="grid align-items-center align-content-center justify-content-center">
-        <div class="col-3">
+        <div class="col-3 flex flex-column gap-2 justify-content-end align-items-center">
           <b>{{ getDateFromString(cross.date).toLocaleDateString('es-AR') }}</b>
+          <CreateCrossDialog v-if="isAdmin" :on-complete-action="() => onUpdate && onUpdate()" :edit-mode="true"
+                             :cross="cross"/>
         </div>
         <div class="col-4">
           <div class="text-center">

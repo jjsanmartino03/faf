@@ -86,6 +86,9 @@ class CrossesViewSet(viewsets.ModelViewSet):
             local_team_category = TeamCategories.objects.get(team_id=cross.local_team_id, category_id=category.id)
             visitor_team_category = TeamCategories.objects.get(team_id=cross.visitor_team_id, category_id=category.id)
 
+            if not local_team_category or not visitor_team_category:
+                return Response({'error': f'Teams category for category {category.year} not found.'}, status=404)
+
             local_validation = Validation.objects.create(status=ValidationStatus.PENDING.value, photo=None)
             visitor_validation = Validation.objects.create(status=ValidationStatus.PENDING.value, photo=None)
 
@@ -132,3 +135,29 @@ class CrossesViewSet(viewsets.ModelViewSet):
         # Por ahora lo dejamos así pero es una mejora a realizar.
 
         return Response(CrossesSerializer(crosses, many=True).data)
+
+    # method for update
+    def update(self, request, *args, **kwargs):
+        data = request.data
+        cross_id = kwargs.get('pk')
+        cross = Crosses.objects.get(id=cross_id)
+
+        if not data.get('date'):
+            return Response({'error': 'Missing data'}, status=400)
+
+        # validate if date is parseable and is at least today
+        date_string = data.get('date')
+        try:
+            parsed_date = datetime.strptime(date_string + ' 00:00:00', '%Y-%m-%d %H:%M:%S')
+
+            print(parsed_date)
+            print(datetime.now().replace(hour=0, minute=0, second=0, microsecond=0))
+            if parsed_date < datetime.now().replace(hour=0, minute=0, second=0, microsecond=0):
+                return Response({'error': 'Invalid date', 'date': parsed_date, }, status=400)
+        except ValueError:
+            return Response({'error': 'Invalid date format'}, status=400)
+
+        cross.date = parsed_date.date()
+        cross.save()
+
+        return Response(CrossesSerializer(cross).data)

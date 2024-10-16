@@ -25,13 +25,13 @@ type TeamsStore = {
   statusCreateTeam: 'loading' | 'success' | 'error' | 'idle',
   statusGetTeam: 'loading' | 'success' | 'error' | 'idle'
 }
+const teams = ref<Team[] | null>(null);
+const team = ref<TeamWithCategories | null>(null);
+const statusGetTeams = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+const statusCreateTeam = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+const statusGetTeam = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 
 export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('teams', () => {
-  const teams = ref<Team[] | null>(null);
-  const team = ref<TeamWithCategories | null>(null);
-  const statusGetTeams = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
-  const statusCreateTeam = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
-  const statusGetTeam = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
   const toast = useToast();
 
   async function getTeams() {
@@ -49,10 +49,15 @@ export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('
     try {
       await api.post("api/teams/", team);
       statusCreateTeam.value = 'success';
-      toast.add({ severity: 'success', summary: 'Equipo creado', detail: 'El equipo ha sido creado correctamente', life: 3000 });
+      toast.add({
+        severity: 'success',
+        summary: 'Equipo creado',
+        detail: 'El equipo ha sido creado correctamente',
+        life: 3000
+      });
     } catch (e) {
       statusCreateTeam.value = 'error';
-      toast.add({ severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el equipo', life: 3000 });
+      toast.add({severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el equipo', life: 3000});
     }
   }
 

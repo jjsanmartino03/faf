@@ -13,6 +13,7 @@ const store = useCrossesStore();
 const authStore = useAuthStore()
 onMounted(async () => {
   store.getCrosses();
+  authStore.getCurrentUser()
 })
 const crosses = computed(() => store.crosses)
 
@@ -40,7 +41,7 @@ const onKeydown = (e) => {
       <Button class="h-auto" aria-label="reload" icon="pi pi-refresh" @click="store.getCrosses()"/>
     </div>
     <div v-if="authStore.isAdmin" class="w-full">
-      <CreateCrossDialog :on-create-cross="search"/>
+      <CreateCrossDialog :on-complete-action="search"/>
     </div>
   </div>
   <div class="flex">
@@ -50,7 +51,7 @@ const onKeydown = (e) => {
       </div>
       <div v-if="store.statusGetCrosses == 'success'" class="w-full">
         <div v-if="crosses && crosses.length" class="w-full">
-          <Cross v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3"/>
+          <Cross :on-update="search" v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3"/>
         </div>
         <div v-else>
           <div class="text-center">No se encontraron partidos</div>

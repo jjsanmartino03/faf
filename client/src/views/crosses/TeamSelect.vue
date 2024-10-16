@@ -2,18 +2,17 @@
 import {computed, defineProps, PropType, ref, toRaw} from "vue";
 import Dropdown from 'primevue/dropdown';
 import Button from 'primevue/button';
-import Team from "../../interfaces/team.js";
-import {useTeamsStore} from "../../store/teams.ts";
+import {useTeamsStore, Team} from "../../store/teams.ts";
 
 const props = defineProps({
   modelValue: {
     default: null,
     type: Object as PropType<Team | null>,
   },
-  statusGetTeams: {
-    required: true,
-    type: String as PropType<string>,
-  },
+  disabled: {
+    default: false,
+    type: Boolean as PropType<boolean>,
+  }
 });
 
 const emit = defineEmits(['update:modelValue'])
@@ -32,8 +31,7 @@ const updateSelectedTeam = (team: Team) => {
 
 <template>
   <div class="card flex justify-center w-full">
-
-    <Dropdown filter :loading="statusGetTeams == 'loading'" v-model="selectedTeam"
+    <Dropdown :disabled="disabled" filter :loading="teamsStore.statusGetTeams === 'loading'" v-model="selectedTeam"
               @update:model-value="updateSelectedTeam" :options="teams" optionLabel="name"
               placeholder="Elige un Equipo"
               class="w-full">

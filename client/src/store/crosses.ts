@@ -87,6 +87,29 @@ export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineS
       }
     }
 
+    async function updateCross(id: number, data: { date: string }) {
+      statusCreateCross.value = 'loading'
+      try {
+        await api.put(`api/crosses/${id}`, data)
+        statusCreateCross.value = 'success'
+        toast.add({
+          severity: 'success',
+          summary: 'Éxito',
+          detail: 'Cruce actualizado correctamente',
+          life: 3000
+        });
+      } catch (e) {
+        statusCreateCross.value = 'error'
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Ha ocurrido un error al actualizar el partido',
+          life: 3000
+        });
+        return e
+      }
+    }
+
     return {
       crosses,
       cross,
@@ -95,6 +118,7 @@ export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineS
       statusGetCross,
       getCrosses,
       createCross,
+      updateCross
     }
   }
 )
