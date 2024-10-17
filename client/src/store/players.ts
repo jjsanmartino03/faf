@@ -11,13 +11,15 @@ export type Player = {
   status_text: string
 };
 
+const players = ref<Player[] | null>(null);
+const player = ref<Player | null>(null);
+const statusGetPlayers = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+const statusCreatePlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+const statusGetPlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+
 export const usePlayersStore = defineStore("players", () => {
   const toast = useToast();
-  const players = ref<Player[] | null>(null);
-  const player = ref<Player | null>(null);
-  const statusGetPlayers = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
-  const statusCreatePlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
-  const statusGetPlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+
 
   async function getPlayers(team_category = null) {
     try {
@@ -79,6 +81,29 @@ export const usePlayersStore = defineStore("players", () => {
     }
   }
 
+  async function updatePlayerStatus(playerId: number, status: boolean) {
+    statusCreatePlayer.value = 'loading';
+    try {
+      await api.put(`api/players/${playerId}/`, {status});
+      statusCreatePlayer.value = 'success';
+      toast.add({
+        severity: 'success',
+        summary: 'Jugador actualizado',
+        detail: 'El jugador ha sido actualizado correctamente',
+        life: 3000
+      });
+    } catch (e) {
+      statusCreatePlayer.value = 'error';
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al actualizar el jugador',
+        life: 3000
+      });
+      return e
+    }
+  }
+
 
   return {
     players,
@@ -89,6 +114,7 @@ export const usePlayersStore = defineStore("players", () => {
     getPlayers,
     createPlayer,
     getPlayer,
+    updatePlayerStatus,
     updatePlayer
   };
 });

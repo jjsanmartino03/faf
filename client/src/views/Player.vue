@@ -1,59 +1,68 @@
-<script setup>
+<script setup lang="ts">
 import InputText from "primevue/inputtext";
 import Button from "primevue/button";
 import InputGroup from "primevue/inputgroup";
+import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
-import {onMounted, ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import {mockPlayers} from "../mocks/players";
 import {useRoute} from "vue-router";
-import {mockTeams} from "../mocks/teams";
+import {usePlayersStore} from "../store/players";
+import {useTeamsStore} from "../store/teams.ts";
 
 const route = useRoute()
-
-const player = mockPlayers.find(player => player.id == route.params.playerId)
-const isEnabled = ref(player.isEnabled)
-
-const disablePlayer = () => {
-  console.log('Player disabled')
-  isEnabled.value = false
-}
-
-const enablePlayer = () => {
-  isEnabled.value = true
-}
-
 const photosQuantity = ref(12)
-const photosArray = new Array(photosQuantity.value)
 
+const photosArray = new Array(photosQuantity.value)
 const generateRandomString = () => {
   return Math.random().toString(36).substring(7); // Generate a random string
 }
 
 const playerId = route.params.playerId
+
 const teamId = route.params.teamId
-const categoryYear = route.params.categoryYear
+const categoryYear = route.params.categoryId
+const playersStore = usePlayersStore()
+const teamsStore = useTeamsStore()
 
-const team = mockTeams.find(team => team.id == teamId)
+const player = computed(() => playersStore.player)
+const isEnabled = computed(() => player ? player.value.status : false)
+onMounted(() => {
+  playersStore.getPlayer(parseInt(playerId as string))
+  teamsStore.getTeam(parseInt(teamId as string))
+})
 
-const items = ref([
+const team = computed(() => teamsStore.team)
+
+const updatePlayerStatus = async (newStatus: boolean) => {
+  const error = await playersStore.updatePlayerStatus(player.value.id, newStatus)
+  if (!error) {
+    player.value.status = newStatus
+  }
+}
+
+const items = computed(() => [
   {label: 'Equipos', url: '/teams'},
-  {label: team.name, url: '/teams/' + team.id},
-  {label: 'Categoría ' + categoryYear, url: '/teams/' + team.id + '/categories/' + categoryYear},
-  {label: player.name}
+  {label: team.value?.name, url: '/teams/' + team.value?.id},
+  {label: 'Categoría ' + categoryYear, url: '/teams/' + team.value?.id + '/categories/' + categoryYear},
+  {label: player.value?.name}
 ])
 
 </script>
 <template>
-  <main class="flex flex-column justify-content-center align-items-center h-screen px-4 gap-2 w-full">
-    <div class="w-full"><Breadcrumb class="py-2 h-min px-0 w-full" :model="items"/></div>
+  <main v-if="playersStore.statusGetPlayer !== 'loading' && player"
+        class="flex flex-column justify-content-center align-items-center gap-2 w-full">
+    <div class="w-full">
+      <Breadcrumb class="py-2 h-min px-0 w-full" :model="items"/>
+    </div>
     <header class="w-full flex">
 
       <div class="flex pt-2 gap-2 justify-content-between pb-2 align-items-center ">
-        <img :src="player.photo" :alt="'Foto de ' + player.name" class="w-6rem border-round"/>
         <h1 class="m-0">{{ player.name }}</h1>
-        <Button v-if="isEnabled" icon="pi pi-check" severity="success" class="mr-2 text-4xl" icon-class="text-xl"
-                text @click="disablePlayer"/>
-        <Button v-else icon="pi pi-times" severity="danger" class="mr-2" text @click="enablePlayer"/>
+        <Button :loading="playersStore.statusCreatePlayer === 'loading'"
+                :icon="isEnabled ? 'pi pi-check' : 'pi pi-times'" :severity="isEnabled ?'success' : 'danger'"
+                class="mr-2 text-4xl" icon-class="text-xl"
+                text @click="() =>updatePlayerStatus(!isEnabled)"/>
       </div>
 
     </header>
@@ -73,5 +82,8 @@ const items = ref([
 
       </div>
     </div>
+  </main>
+  <main v-else class="flex flex-column justify-content-center align-items-center h-full px-4 gap-4 pt-2">
+    <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;"/>
   </main>
 </template>

@@ -62,11 +62,11 @@ const routes: RouteRecordRaw[] = [
             component: Team
           },
           {
-            path: ":teamId/categories/:categoryYear",
+            path: ":teamId/categories/:categoryId",
             component: Category
           },
           {
-            path: ":teamId/categories/:categoryYear/players/:playerId",
+            path: ":teamId/categories/:categoryId/players/:playerId",
             component: Player
           }
         ]

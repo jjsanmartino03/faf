@@ -46,7 +46,7 @@ class ApiClient {
       url += '/'
     }
 
-    // await new Promise((resolve,reject) => setTimeout(resolve, 5000))
+    // await new Promise((resolve, reject) => setTimeout(resolve, 5000))
 
     try {
       const config = {
@@ -56,6 +56,7 @@ class ApiClient {
         params: method === 'get' ? data : null,
         headers
       };
+
       console.log(config);
       const response = await this.apiClient.request<any, AxiosResponse<ResponseBodyType>>(config)
 
