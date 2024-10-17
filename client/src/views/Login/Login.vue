@@ -29,8 +29,8 @@ if (authStore.isAuthenticated) {
 async function login(e) {
   e.preventDefault()
   const result = await authStore.login(username.value, password.value)
-
   if (result) {
+    authStore.getCurrentUser()
     await router.push({
       name: 'home'
     })

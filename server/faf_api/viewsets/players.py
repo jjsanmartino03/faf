@@ -43,4 +43,3 @@ class PlayersViewSet(viewsets.ModelViewSet):
         player.save()
 
         return Response({'id': player.id, 'name': player.name})
-

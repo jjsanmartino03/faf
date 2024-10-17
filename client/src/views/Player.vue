@@ -9,6 +9,7 @@ import {mockPlayers} from "../mocks/players";
 import {useRoute} from "vue-router";
 import {usePlayersStore} from "../store/players";
 import {useTeamsStore} from "../store/teams.ts";
+import {useAuthStore} from "../store/auth.ts";
 
 const route = useRoute()
 const photosQuantity = ref(12)
@@ -21,9 +22,10 @@ const generateRandomString = () => {
 const playerId = route.params.playerId
 
 const teamId = route.params.teamId
-const categoryYear = route.params.categoryId
+const categoryId = route.params.categoryId
 const playersStore = usePlayersStore()
 const teamsStore = useTeamsStore()
+const authStore = useAuthStore()
 
 const player = computed(() => playersStore.player)
 const isEnabled = computed(() => player ? player.value.status : false)
@@ -33,6 +35,8 @@ onMounted(() => {
 })
 
 const team = computed(() => teamsStore.team)
+const categoryYear = computed(() =>
+    team.value ? team.value.categories.find(category => category.id === parseInt(route.params.categoryId as string)).category : '')
 
 const updatePlayerStatus = async (newStatus: boolean) => {
   const error = await playersStore.updatePlayerStatus(player.value.id, newStatus)
@@ -44,9 +48,10 @@ const updatePlayerStatus = async (newStatus: boolean) => {
 const items = computed(() => [
   {label: 'Equipos', url: '/teams'},
   {label: team.value?.name, url: '/teams/' + team.value?.id},
-  {label: 'Categoría ' + categoryYear, url: '/teams/' + team.value?.id + '/categories/' + categoryYear},
+  {label: 'Categoría ' + categoryYear.value, url: '/teams/' + team.value?.id + '/categories/' + categoryId},
   {label: player.value?.name}
 ])
+
 
 </script>
 <template>
@@ -59,7 +64,7 @@ const items = computed(() => [
 
       <div class="flex pt-2 gap-2 justify-content-between pb-2 align-items-center ">
         <h1 class="m-0">{{ player.name }}</h1>
-        <Button :loading="playersStore.statusCreatePlayer === 'loading'"
+        <Button :disabled="!authStore.isAdmin" :loading="playersStore.statusCreatePlayer === 'loading'"
                 :icon="isEnabled ? 'pi pi-check' : 'pi pi-times'" :severity="isEnabled ?'success' : 'danger'"
                 class="mr-2 text-4xl" icon-class="text-xl"
                 text @click="() =>updatePlayerStatus(!isEnabled)"/>
@@ -79,7 +84,6 @@ const items = computed(() => [
       </div>
       <div class="flex justify-content-center w-full">
         <Button icon="pi pi-plus" size="large" class="text-4xl w-8rem h-8rem" rounded raised/>
-
       </div>
     </div>
   </main>

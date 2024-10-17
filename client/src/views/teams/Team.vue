@@ -4,7 +4,6 @@ import {useRoute} from "vue-router";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
-import {mockCategories} from "../../mocks/categories.ts";
 import {useTeamsStore} from "../../store/teams";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";

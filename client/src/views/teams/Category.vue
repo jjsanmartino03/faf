@@ -87,6 +87,7 @@ onMounted(async () => {
                               :edit-mode="true"/>
         </template>
       </Column>
+      <template #empty> No se encontraron jugadores.</template>
     </DataTable>
   </main>
 </template>

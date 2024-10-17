@@ -60,6 +60,14 @@ class Players(models.Model):
         db_table = 'players'
 
 
+class PlayerImages(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    player = models.ForeignKey(Players, models.DO_NOTHING)
+
+    class Meta:
+        db_table = 'player_images'
+
+
 class TeamCategories(models.Model):
     id = models.BigAutoField(primary_key=True)
     team = models.ForeignKey('Teams', models.DO_NOTHING)
