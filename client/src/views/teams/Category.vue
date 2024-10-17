@@ -17,6 +17,7 @@ import Avatar from 'primevue/avatar';
 
 import {usePlayersStore} from "../../store/players";
 import {useTeamsStore} from "../../store/teams";
+import CreatePlayerDialog from "./CreatePlayerDialog.vue";
 
 const route = useRoute();
 console.log(route.params.categoryYear);
@@ -42,7 +43,7 @@ const toggleVisible = () => {
 
 const players = computed(() => playersStore.players)
 
-const setStatePlayers = () => {
+if (players.value) {
   players.value.forEach(player => {
     player.status_text = player.status ? 'Activo' : 'Inactivo'
   })
@@ -55,7 +56,6 @@ const onSubmit = async (e) => {
     team_category: parseInt(route.params.categoryYear),
   })
   await playersStore.getPlayers(parseInt(route.params.categoryYear))
-  setStatePlayers()
   visible.value = false
   name.value = ''
 }
@@ -63,7 +63,6 @@ const onSubmit = async (e) => {
 onMounted(async () => {
   await teamsStore.getTeam(route.params.teamId)
   await playersStore.getPlayers(parseInt(route.params.categoryYear))
-  setStatePlayers()
 })
 
 </script>
@@ -75,7 +74,7 @@ onMounted(async () => {
       </Breadcrumb>
       <div class="flex pt-2 gap-2 justify-content-between pb-2 align-items-start ">
         <h1 class="mt-0">Categoría {{ categoryYear }}</h1>
-        <Button label="Nuevo Jugador" icon="pi pi-plus" size="small" @click="toggleVisible"/>
+        <CreatePlayerDialog :category-id="parseInt(route.params.categoryYear)"/>
       </div>
       <div class="flex gap-2">
         <InputGroup>
@@ -101,28 +100,12 @@ onMounted(async () => {
       <Column header="Acciones" body-class="font-bold text-center">
         <template #body="slotProps">
           <router-link :to="categoryYear + '/players/' + slotProps.data.id">
-            <Button icon="pi pi-pen-to-square" class="mr-2"/>
+            <Button icon="pi pi-external-link" class="mr-2"/>
           </router-link>
+          <CreatePlayerDialog :category-id="parseInt(route.params.categoryYear)" :player="slotProps.data"
+                              :edit-mode="true"/>
         </template>
       </Column>
     </DataTable>
   </main>
-
-  <Dialog v-model:visible="visible" modal header="Crear Nuevo Jugador" :style="{ width: '25rem' }">
-    <form @submit.prevent="onSubmit" class="flex flex-column w-full align-items-center justify-content-center">
-      <div class="p-field mt-4">
-        <FloatLabel>
-          <label for="name">Nombre</label>
-          <InputText required="true" id="name" v-model="name"/>
-        </FloatLabel>
-      </div>
-      <div v-if="playersStore.statusCreatePlayer != 'loading'" class="flex justify-end gap-2 mt-4">
-        <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
-        <Button type="submit" label="Guardar"></Button>
-      </div>
-      <div v-else class="flex justify-content-center">
-        <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;"/>
-      </div>
-    </form>
-  </Dialog>
 </template>

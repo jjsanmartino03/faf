@@ -14,8 +14,8 @@ class TeamsViewSet(viewsets.ModelViewSet):
     authentication_classes = []
     permission_classes = []
 
-    queryset = Teams.objects.all()
     serializer_class = TeamsSerializer
+    queryset = Teams.objects.all().order_by('name')
 
     # overwrite the team create endpoint
 

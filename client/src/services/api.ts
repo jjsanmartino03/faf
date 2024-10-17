@@ -1,4 +1,4 @@
-import axios, {AxiosHeaders, AxiosInstance, AxiosResponse} from 'axios'
+import axios, {AxiosError, AxiosHeaders, AxiosInstance, AxiosResponse} from 'axios'
 
 class ApiClient {
   private apiClient: AxiosInstance
@@ -13,7 +13,7 @@ class ApiClient {
 
 
   async get<ResponseBodyType = any, Params = any>(url, params: Params | null = null): Promise<ResponseBodyType> {
-    return await this.request<ResponseBodyType>('get', url, params  )
+    return await this.request<ResponseBodyType>('get', url, params)
   }
 
   async post<ResponseBodyType = any>(url, data): Promise<ResponseBodyType> {
@@ -61,6 +61,12 @@ class ApiClient {
 
       return response.data
     } catch (e) {
+      if (e instanceof AxiosError) {
+        if (e.response?.status === 401) {
+          localStorage.removeItem('token')
+          window.location.href = '/login'
+        }
+      }
       console.log('An error has ocurred', url, method, e)
       throw e
     }

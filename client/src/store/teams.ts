@@ -41,6 +41,12 @@ export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('
       statusGetTeams.value = 'success';
     } catch (e) {
       statusGetTeams.value = 'error';
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al obtener los equipos',
+        life: 3000
+      });
     }
   }
 
@@ -58,6 +64,7 @@ export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('
     } catch (e) {
       statusCreateTeam.value = 'error';
       toast.add({severity: 'error', summary: 'Error', detail: 'Ha ocurrido un error al crear el equipo', life: 3000});
+      return e
     }
   }
 
@@ -69,7 +76,37 @@ export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('
       statusGetTeam.value = 'success';
     } catch (e) {
       statusGetTeam.value = 'error';
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al obtener el equipo',
+        life: 3000
+      });
     }
+  }
+
+  async function updateTeam(teamId: number, team: Team) {
+    statusGetTeam.value = 'loading';
+    try {
+      await api.put(`api/teams/${teamId}/`, team);
+      statusGetTeam.value = 'success';
+      toast.add({
+        severity: 'success',
+        summary: 'Éxito',
+        detail: 'Equipo actualizado correctamente',
+        life: 3000
+      });
+    } catch (e) {
+      statusGetTeam.value = 'error';
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al actualizar el equipo',
+        life: 3000
+      });
+      return e
+    }
+
   }
 
   return {
@@ -80,6 +117,7 @@ export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('
     statusGetTeam,
     getTeams,
     createTeam,
-    getTeam
+    getTeam,
+    updateTeam
   };
 })

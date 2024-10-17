@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import {ref} from "vue";
+import {computed, ref, toRaw} from "vue";
 import api from "../services/api.ts";
 import {useToast} from "primevue/usetoast";
 
@@ -29,7 +29,7 @@ export const usePlayersStore = defineStore("players", () => {
     }
   }
 
-  async function createPlayer(player: Player) {
+  async function createPlayer(player: Partial<Player>) {
     statusCreatePlayer.value = 'loading';
     try {
       await api.post("api/players/", player);
@@ -46,6 +46,28 @@ export const usePlayersStore = defineStore("players", () => {
     }
   }
 
+  async function updatePlayer(id: number, player: Partial<Player>) {
+    statusCreatePlayer.value = 'loading';
+    try {
+      await api.put(`api/players/${id}/`, player);
+      statusCreatePlayer.value = 'success';
+      toast.add({
+        severity: 'success',
+        summary: 'Jugador actualizado',
+        detail: 'El jugador ha sido actualizado correctamente',
+        life: 3000
+      });
+    } catch (e) {
+      statusCreatePlayer.value = 'error';
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al actualizar el jugador',
+        life: 3000
+      });
+    }
+  }
+
   async function getPlayer(playerId: number) {
     statusGetPlayer.value = 'loading';
     try {
@@ -57,6 +79,7 @@ export const usePlayersStore = defineStore("players", () => {
     }
   }
 
+
   return {
     players,
     player,
@@ -65,6 +88,7 @@ export const usePlayersStore = defineStore("players", () => {
     statusGetPlayer,
     getPlayers,
     createPlayer,
-    getPlayer
+    getPlayer,
+    updatePlayer
   };
 });

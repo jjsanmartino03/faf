@@ -29,7 +29,7 @@ const items = computed(() => [
 
 <template>
   <header class="w-full">
-    <Breadcrumb  class="py-2 px-0" :model="items">
+    <Breadcrumb class="py-2 px-0" :model="items">
     </Breadcrumb>
     <div class="flex gap-2 justify-content-between pb-2 align-items-start ">
       <h1>Equipos</h1>
@@ -56,8 +56,9 @@ const items = computed(() => [
     <Column header="Acciones" body-class="font-bold">
       <template #body="slotProps">
         <router-link :to="'/teams/' + slotProps.data.id">
-          <Button icon="pi pi-pen-to-square" class="mr-2"/>
+          <Button icon="pi pi-external-link" class="mr-2"/>
         </router-link>
+        <CreateTeamDialog :team="slotProps.data" :edit-mode="true" />
       </template>
     </Column>
     <template #loading>

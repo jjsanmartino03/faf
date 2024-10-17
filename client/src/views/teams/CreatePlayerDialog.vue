@@ -6,23 +6,26 @@ import FloatLabel from "primevue/floatlabel";
 import InputText from "primevue/inputtext";
 import {useTeamsStore, Team} from "../../store/teams";
 import ProgressSpinner from "primevue/progressspinner";
+import {usePlayersStore, Player} from "../../store/players.ts";
 
 const visible = ref(false);
 const props = defineProps({
-  team: {
-    type: Object as PropType<Team>,
+  player: {
+    type: Object as PropType<Partial<Player>>,
     default: null
   },
   editMode: {
     type: Boolean,
     default: false
   },
+  categoryId: {
+    type: Number,
+    required: true
+  }
 })
-const name = ref(props.team ? props.team.name : '');
-const logo_url = ref(props.team ? props.team.logo_url : '');
+const name = ref(props.player ? props.player.name : '');
 
-
-const {createTeam, statusCreateTeam, getTeams, updateTeam} = useTeamsStore()
+const {createPlayer, statusCreatePlayer, getPlayers, updatePlayer} = usePlayersStore()
 
 
 const onSubmit = async (e, editMode) => {
@@ -30,31 +33,29 @@ const onSubmit = async (e, editMode) => {
 
   let error = null
   if (editMode) {
-    error = await updateTeam(props.team.id, {
-      name: name.value,
-      logo_url: logo_url.value
+    error = await updatePlayer(props.player.id, {
+      name: name.value
     })
   } else {
-    error = await createTeam({
+    error = await createPlayer({
       name: name.value,
-      logo_url: logo_url.value
+      team_category: props.categoryId
     })
   }
 
   if (error) return
 
-  await getTeams()
+  await getPlayers(props.categoryId)
   visible.value = false
 }
 
-console.log(props.team);
 </script>
 
 <template>
   <Button v-if="editMode" @click="visible = true" icon="pi pi-pen-to-square"/>
-  <Button v-else label="Nuevo equipo" icon="pi pi-plus" class="mt-4" size="small" @click="visible = true"/>
-  <Dialog :draggable="false" class="mx-3" v-model:visible="visible" modal
-          :header="editMode ? 'Actualizar equipo' : 'Crear equipo'" :style="{ width: '25rem' }">
+  <Button v-else label="Nuevo Jugador" icon="pi pi-plus" class="mt-4" size="small" @click="visible = true"/>
+  <Dialog :draggable="false" v-model:visible="visible" modal :header="editMode ? 'Editar jugador' : 'Crear jugador'"
+          :style="{ width: '25rem' }">
     <form @submit.prevent="(e) => onSubmit(e,editMode)"
           class="flex flex-column w-full align-items-center justify-content-center">
       <div class="p-field mt-4">
@@ -63,13 +64,7 @@ console.log(props.team);
           <InputText required="true" id="name" v-model="name"/>
         </FloatLabel>
       </div>
-      <div class="p-field mt-4">
-        <FloatLabel>
-          <label for="logo">Url de la imagen</label>
-          <InputText required="true" id="logo" v-model="logo_url"/>
-        </FloatLabel>
-      </div>
-      <div v-if="statusCreateTeam != 'loading'" class="flex justify-end gap-2 mt-4">
+      <div v-if="statusCreatePlayer != 'loading'" class="flex justify-end gap-2 mt-4">
         <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
         <Button type="submit" label="Guardar"></Button>
       </div>
