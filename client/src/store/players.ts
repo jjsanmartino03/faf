@@ -1,7 +1,12 @@
 import {defineStore} from "pinia";
-import {computed, ref, toRaw} from "vue";
+import {ref} from "vue";
 import api from "../services/api.ts";
 import {useToast} from "primevue/usetoast";
+
+export type PlayerImage = {
+  id: number
+  image: string
+}
 
 export type Player = {
   id: number
@@ -9,6 +14,7 @@ export type Player = {
   team_category: number
   status: boolean
   status_text: string
+  images: PlayerImage[]
 };
 
 const players = ref<Player[] | null>(null);
@@ -16,6 +22,7 @@ const player = ref<Player | null>(null);
 const statusGetPlayers = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 const statusCreatePlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 const statusGetPlayer = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+const statusUploadImage = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 
 export const usePlayersStore = defineStore("players", () => {
   const toast = useToast();
@@ -81,6 +88,33 @@ export const usePlayersStore = defineStore("players", () => {
     }
   }
 
+  async function uploadImage(playerId: number, image: File) {
+    try {
+      statusUploadImage.value = 'loading';
+      const formData = new FormData();
+      formData.append('image', image);
+      await api.post(`api/players/${playerId}/image/`, formData, {
+        'Content-Type': 'multipart/form-data'
+      });
+      statusUploadImage.value = 'success';
+      toast.add({
+        severity: 'success',
+        summary: 'Imagen actualizada',
+        detail: 'La imagen ha sido actualizada correctamente',
+        life: 3000
+      });
+    } catch (e) {
+      console.error(e)
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al actualizar la imagen',
+        life: 3000
+      });
+      statusUploadImage.value = 'error';
+    }
+  }
+
   async function updatePlayerStatus(playerId: number, status: boolean) {
     statusCreatePlayer.value = 'loading';
     try {
@@ -93,6 +127,7 @@ export const usePlayersStore = defineStore("players", () => {
         life: 3000
       });
     } catch (e) {
+
       statusCreatePlayer.value = 'error';
       toast.add({
         severity: 'error',
@@ -111,10 +146,12 @@ export const usePlayersStore = defineStore("players", () => {
     statusGetPlayers,
     statusCreatePlayer,
     statusGetPlayer,
+    statusUploadImage,
     getPlayers,
     createPlayer,
     getPlayer,
     updatePlayerStatus,
-    updatePlayer
+    updatePlayer,
+    uploadImage,
   };
 });
