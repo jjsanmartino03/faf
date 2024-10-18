@@ -13,7 +13,7 @@ const Home = () => import("./views/Home.vue");
 const Teams = () => import("./views/teams/TeamsList.vue");
 const Team = () => import("./views/teams/Team.vue");
 const Category = () => import("./views/teams/Category.vue");
-const Player = () => import("./views/Player.vue");
+const Player = () => import("./views/players/Player.vue");
 const CrossList = () => import("./views/crosses/CrossList.vue");
 
 const routes: RouteRecordRaw[] = [

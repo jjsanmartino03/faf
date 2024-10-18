@@ -13,12 +13,17 @@ import Avatar from 'primevue/avatar';
 import {usePlayersStore} from "../../store/players";
 import {useTeamsStore} from "../../store/teams";
 import CreatePlayerDialog from "./CreatePlayerDialog.vue";
+import ProgressSpinner from "primevue/progressspinner";
 
 const route = useRoute();
 console.log(route.params.categoryId);
 const playersStore = usePlayersStore()
 
 const teamsStore = useTeamsStore()
+onMounted(async () => {
+  playersStore.getPlayers(parseInt(route.params.categoryId as string))
+  teamsStore.getTeam(route.params.teamId)
+})
 const team = computed(() => teamsStore.team)
 const visible = ref(false);
 
@@ -41,11 +46,6 @@ if (players.value) {
   })
 }
 
-onMounted(async () => {
-  await teamsStore.getTeam(route.params.teamId)
-  await playersStore.getPlayers(parseInt(route.params.categoryId as string))
-})
-
 </script>
 
 <template>
@@ -65,7 +65,7 @@ onMounted(async () => {
       </div>
 
     </header>
-    <DataTable :value="players" table-style="min-width: 100%; width: 100%" class="w-full">
+    <DataTable :loading="playersStore.statusGetPlayers === 'loading'" :value="players" table-style="min-width: 100%; width: 100%" class="w-full">
       <Column header="Foto" class="w-2">
         <template #body="slotProps">
           <Avatar icon="pi pi-user" class="mr-2" size="xlarge" shape="circle"/>
@@ -87,6 +87,11 @@ onMounted(async () => {
                               :edit-mode="true"/>
         </template>
       </Column>
+      <template #loading>
+        <div class="bg-white w-full h-full flex justify-content-center">
+          <ProgressSpinner strokeWidth="4" style="width: 4rem; height: 4rem;"/>
+        </div>
+      </template>
       <template #empty> No se encontraron jugadores.</template>
     </DataTable>
   </main>

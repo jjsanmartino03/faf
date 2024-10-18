@@ -5,13 +5,15 @@ import InputGroup from "primevue/inputgroup";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import {computed, onMounted, ref} from "vue";
-import {mockPlayers} from "../mocks/players";
+import {mockPlayers} from "../../mocks/players.ts";
 import {useRoute} from "vue-router";
-import {usePlayersStore} from "../store/players";
-import {useTeamsStore} from "../store/teams.ts";
-import {useAuthStore} from "../store/auth.ts";
+import {usePlayersStore} from "../../store/players.ts";
+import {useTeamsStore} from "../../store/teams.ts";
+import {useAuthStore} from "../../store/auth.ts";
+import UploadPlayerImageDialog from "./UploadPlayerImageDialog.vue";
 
 const route = useRoute()
+const apiUrl = import.meta.env.VITE_API_URL
 const photosQuantity = ref(12)
 
 const photosArray = new Array(photosQuantity.value)
@@ -71,19 +73,20 @@ const items = computed(() => [
       </div>
 
     </header>
-    <div class="flex flex-column justify-content-between h-full pb-4">
-      <div>
-        <h2 class="mt-0">Fotos</h2>
-        <div class="grid border-round-md align-items-center">
-          <div v-for="_ in photosArray"
-               class="col-3 bg-blue-100 border-2 align-items-center justify-content-center text-center">
-            <img :src="'https://source.boringavatars.com/beam/120/'+ generateRandomString()" alt="Foto de jugador"
-                 class="w-6rem border-round"/>
-          </div>
+    <div class="flex flex-column w-full justify-content-between h-full pb-4 gap-4">
+      <div class="flex align-items-center p-y2 gap-2">
+        <h2 class="m-0">Fotos</h2>
+        <UploadPlayerImageDialog :player-id="player.id"/>
+      </div>
+      <div v-if="player.images.length" class="grid border-round-md align-items-center  w-full">
+        <div v-for="image in player.images"
+             class="col-3  align-items-center justify-content-center text-center">
+          <img :src="apiUrl+ 'media/images/players/'+image.image" alt="Foto de jugador"
+               class="w-full border-round"/>
         </div>
       </div>
-      <div class="flex justify-content-center w-full">
-        <Button icon="pi pi-plus" size="large" class="text-4xl w-8rem h-8rem" rounded raised/>
+      <div v-else class="flex flex-column align-items-center gap-2">
+        <p>No hay fotos disponibles</p>
       </div>
     </div>
   </main>

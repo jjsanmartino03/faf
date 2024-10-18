@@ -62,7 +62,8 @@ class Players(models.Model):
 
 class PlayerImages(models.Model):
     id = models.BigAutoField(primary_key=True)
-    player = models.ForeignKey(Players, models.DO_NOTHING)
+    player = models.ForeignKey('Players', models.DO_NOTHING)
+    image = models.CharField(max_length=255)
 
     class Meta:
         db_table = 'player_images'

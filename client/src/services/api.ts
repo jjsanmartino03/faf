@@ -16,8 +16,8 @@ class ApiClient {
     return await this.request<ResponseBodyType>('get', url, params)
   }
 
-  async post<ResponseBodyType = any>(url, data): Promise<ResponseBodyType> {
-    return await this.request<ResponseBodyType>('post', url, data)
+  async post<ResponseBodyType = any>(url, data, headers = null): Promise<ResponseBodyType> {
+    return await this.request<ResponseBodyType>('post', url, data, headers)
   }
 
   async put<ResponseBodyType = any>(url, data): Promise<ResponseBodyType> {
@@ -32,9 +32,10 @@ class ApiClient {
     return await this.request<ResponseBodyType>('delete', url)
   }
 
-  async request<ResponseBodyType = any>(method, url, data = null) {
+  async request<ResponseBodyType = any>(method, url, data = null, customHeaders = null) {
     let headers: AxiosHeaders = new AxiosHeaders({
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      ...(customHeaders || {})
     })
     const token = localStorage.getItem('token')
     console.log(token);
