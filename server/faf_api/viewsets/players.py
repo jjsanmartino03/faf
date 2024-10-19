@@ -1,3 +1,5 @@
+import os.path
+
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.http.multipartparser import MultiPartParser
@@ -6,8 +8,9 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
 
 from faf_api.models import Players, PlayerImages
-from rest_framework.parsers import FormParser, JSONParser
 from rest_framework.response import Response
+
+from faf_api.services.vision import VisionService
 
 
 class PlayersSerializer(serializers.ModelSerializer):
@@ -17,6 +20,7 @@ class PlayersSerializer(serializers.ModelSerializer):
 
 
 class PlayersViewSet(viewsets.ModelViewSet):
+
     authentication_classes = [TokenAuthentication]
     permission_classes = []
 
@@ -68,12 +72,12 @@ class PlayersViewSet(viewsets.ModelViewSet):
         if not image:
             return Response({'error': 'No image provided'}, status=400)
 
-        imageEntity = PlayerImages.objects.create(player=player)
-        imageEntity.save()
-
         # is png or jpg?
         if image.content_type not in ['image/jpeg', 'image/png']:
             return Response({'error': 'Invalid image format'}, status=400)
+
+        imageEntity = PlayerImages.objects.create(player=player)
+        imageEntity.save()
 
         if image.content_type == 'image/jpeg':
             imageEntity.image = f'{imageEntity.id}.jpg'
@@ -83,7 +87,15 @@ class PlayersViewSet(viewsets.ModelViewSet):
         # save in folder /images/players/{image.id}.{jpg/png}
 
         # Save the image using default_storage
-        path = default_storage.save(f'images/players/{imageEntity.image}', ContentFile(image.read()))
+        relative_path = default_storage.save(f'players/{player.id}/{imageEntity.image}', ContentFile(image.read()))
         imageEntity.save()
 
-        return Response({'status': 'image uploaded', 'path': path}, status=200)
+        real_image_path = os.path.join(
+            default_storage.location,
+            relative_path
+        )
+
+        vision_service = VisionService()
+        vision_service.train_new_player_image(real_image_path, player.id)
+
+        return Response({'status': 'image uploaded', 'path': relative_path}, status=200)
