@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import InputText from "primevue/inputtext";
 import Button from "primevue/button";
-import InputGroup from "primevue/inputgroup";
 import ProgressSpinner from "primevue/progressspinner";
-import Breadcrumb from "primevue/breadcrumb";
 import {computed, onMounted, ref} from "vue";
-import {mockPlayers} from "../../mocks/players.ts";
 import {useRoute} from "vue-router";
 import {usePlayersStore} from "../../store/players.ts";
 import {useTeamsStore} from "../../store/teams.ts";

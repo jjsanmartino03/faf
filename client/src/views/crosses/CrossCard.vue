@@ -25,18 +25,6 @@ const authStore = useAuthStore();
 
 const borderClass = computed(() => {
   return 'border-1 border-left-3 border-primary';
-  switch (props.cross) {
-    case 'Approved':
-      return 'border-1 border-left-3 border-primary';
-    case 'Rejected':
-      return 'border-1 border-left-3 border-red-700';
-    case 'Verifying':
-      return 'border-1 border-left-3 border-orange-300';
-    case 'Available':
-      return 'border-1 border-left-3 border-warning';
-    default:
-      return '';
-  }
 });
 
 console.log(authStore.user)
