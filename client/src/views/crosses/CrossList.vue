@@ -8,6 +8,7 @@ import {computed, onMounted, ref} from "vue";
 import ProgressSpinner from "primevue/progressspinner";
 import CreateCrossDialog from "./CreateCrossDialog.vue";
 import {useAuthStore} from "../../store/auth.ts";
+import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
 
 const store = useCrossesStore();
 const authStore = useAuthStore()
@@ -29,9 +30,21 @@ const onKeydown = (e) => {
   }
 };
 
+const home = ref({
+  icon: 'pi pi-home',
+  route: '/home'
+})
+const model = computed(() => [
+  {label: 'Partidos'},
+])
+
 </script>
 <template>
+
+  <header class="w-full">
+  <CustomBreadcrumb class="p-0" :model="model" :home="home"/>
   <h1 class="text-center my-2">Próximos Cruces</h1>
+  </header>
   <div class="flex flex-column gap-2">
     <div class="flex gap-2 justify-content-center w-full">
       <InputGroup>

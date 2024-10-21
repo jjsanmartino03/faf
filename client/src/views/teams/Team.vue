@@ -7,6 +7,7 @@ import DataTable from "primevue/datatable";
 import {useTeamsStore} from "../../store/teams";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
+import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
 
 const route = useRoute()
 
@@ -19,9 +20,12 @@ onMounted(async () => {
   teamsStore.getTeam(teamId)
 })
 
+const home = ref({
+  icon: 'pi pi-home',
+  route: '/home'
+})
 const items = computed(() => [
-  {label: 'Home', url: '/home'},
-  {label: 'Equipos', url: '/teams'},
+  {label: 'Equipos', route: '/teams'},
   {label: team.value ? team.value.name : '', url: '/teams/' + teamId},
 ])
 
@@ -30,8 +34,8 @@ const items = computed(() => [
   <main v-if="team" class="flex w-full flex-column justify-content-start align-items-center h-full gap-4">
 
     <header class="w-full">
-      <Breadcrumb class="py-2 px-0" :model="items">
-      </Breadcrumb>
+      <CustomBreadcrumb :home="home" :model="items">
+      </CustomBreadcrumb>
       <div class="flex gap-4 justify-content-start pb-2 center ">
         <img :src="team.logo_url" :alt="team.logo_url" class="w-6rem border-round"/>
         <h1>{{ team.name }}</h1>

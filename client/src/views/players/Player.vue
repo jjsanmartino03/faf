@@ -11,15 +11,11 @@ import {usePlayersStore} from "../../store/players.ts";
 import {useTeamsStore} from "../../store/teams.ts";
 import {useAuthStore} from "../../store/auth.ts";
 import UploadPlayerImageDialog from "./UploadPlayerImageDialog.vue";
+import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
 
 const route = useRoute()
 const apiUrl = import.meta.env.VITE_API_URL
 const photosQuantity = ref(12)
-
-const photosArray = new Array(photosQuantity.value)
-const generateRandomString = () => {
-  return Math.random().toString(36).substring(7); // Generate a random string
-}
 
 const playerId = route.params.playerId
 
@@ -48,9 +44,9 @@ const updatePlayerStatus = async (newStatus: boolean) => {
 }
 
 const items = computed(() => [
-  {label: 'Equipos', url: '/teams'},
-  {label: team.value?.name, url: '/teams/' + team.value?.id},
-  {label: 'Categoría ' + categoryYear.value, url: '/teams/' + team.value?.id + '/categories/' + categoryId},
+  {label: 'Equipos', route: '/teams'},
+  {label: team.value?.name, route: '/teams/' + team.value?.id},
+  {label: 'Categoría ' + categoryYear.value, route: '/teams/' + team.value?.id + '/categories/' + categoryId},
   {label: player.value?.name}
 ])
 
@@ -60,7 +56,7 @@ const items = computed(() => [
   <main v-if="playersStore.statusGetPlayer !== 'loading' && player"
         class="flex flex-column justify-content-center align-items-center gap-2 w-full">
     <div class="w-full">
-      <Breadcrumb class="py-2 h-min px-0 w-full" :model="items"/>
+      <CustomBreadcrumb class="py-2 h-min px-0 w-full" :model="items"/>
     </div>
     <header class="w-full flex">
 
@@ -81,7 +77,7 @@ const items = computed(() => [
       <div v-if="player.images.length" class="grid border-round-md align-items-center  w-full">
         <div v-for="image in player.images"
              class="col-3  align-items-center justify-content-center text-center">
-          <img :src="apiUrl+ 'media/images/players/'+image.image" alt="Foto de jugador"
+          <img :src="apiUrl+ 'media/players/'+ player.id + '/'+image.image" alt="Foto de jugador"
                class="w-full border-round"/>
         </div>
       </div>

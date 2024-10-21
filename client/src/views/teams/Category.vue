@@ -14,6 +14,7 @@ import {usePlayersStore} from "../../store/players";
 import {useTeamsStore} from "../../store/teams";
 import CreatePlayerDialog from "./CreatePlayerDialog.vue";
 import ProgressSpinner from "primevue/progressspinner";
+import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
 
 const route = useRoute();
 console.log(route.params.categoryId);
@@ -29,10 +30,11 @@ const visible = ref(false);
 
 const categoryYear = computed(() =>
     team.value ? team.value.categories.find(category => category.id === parseInt(route.params.categoryId as string)).category : '')
+const apiUrl = import.meta.env.VITE_API_URL
 
 const items = computed(() => [
-  {label: 'Equipos', url: '/teams'},
-  {label: team.value ? team.value.name : '', url: '/teams/' + (team.value ? team.value.id : '')},
+  {label: 'Equipos', route: '/teams'},
+  {label: team.value ? team.value.name : '', route: '/teams/' + (team.value ? team.value.id : '')},
   {label: 'Categoría ' + categoryYear.value}
 ])
 console.log(categoryYear);
@@ -51,8 +53,8 @@ if (players.value) {
 <template>
   <main class="flex flex-column justify-content-start align-items-center h-full">
     <header class="w-full">
-      <Breadcrumb class="py-2 px-0" :model="items">
-      </Breadcrumb>
+      <CustomBreadcrumb :model="items">
+      </CustomBreadcrumb>
       <div class="flex pt-2 gap-2 justify-content-between pb-2 align-items-start ">
         <h1 class="mt-0">Categoría {{ categoryYear }}</h1>
         <CreatePlayerDialog :category-id="parseInt(route.params.categoryId as string)"/>
@@ -65,10 +67,13 @@ if (players.value) {
       </div>
 
     </header>
-    <DataTable :loading="playersStore.statusGetPlayers === 'loading'" :value="players" table-style="min-width: 100%; width: 100%" class="w-full">
+    <DataTable :loading="playersStore.statusGetPlayers === 'loading'" :value="players"
+               table-style="min-width: 100%; width: 100%" class="w-full">
       <Column header="Foto" class="w-2">
         <template #body="slotProps">
-          <Avatar icon="pi pi-user" class="mr-2" size="xlarge" shape="circle"/>
+          <Avatar v-if="!slotProps.data.image" icon="pi pi-user" class="mr-2" size="xlarge" shape="circle"/>
+          <Avatar v-else :image="apiUrl+ 'media/players/'+ slotProps.data.id + '/'+slotProps.data.image" class="mr-2"
+                  size="xlarge" shape="circle"/>
         </template>
       </Column>
       <Column sortable field="name" header="Nombre" body-class="font-bold"></Column>

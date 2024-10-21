@@ -37,6 +37,17 @@ class PlayersViewSet(viewsets.ModelViewSet):
                 raise Exception('team_category_id is required')
         return queryset
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        serializer = self.get_serializer(queryset, many=True)
+
+        result = []
+        for player in serializer.data:
+            images = PlayerImages.objects.filter(player_id=player['id'])
+            player['image'] = images[0].image if images else None
+            result.append(player)
+        return Response(result)
+
     def retrieve(self, request, *args, **kwargs):
         player = self.get_object()
 

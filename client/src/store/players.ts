@@ -15,6 +15,7 @@ export type Player = {
   status: boolean
   status_text: string
   images: PlayerImage[]
+  image: string | null
 };
 
 const players = ref<Player[] | null>(null);

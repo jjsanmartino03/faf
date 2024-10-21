@@ -34,6 +34,13 @@ const date = ref<Date | null>(props.cross ? getDateFromString(props.cross.date) 
 const crossesStore = useCrossesStore()
 const {statusGetTeams, getTeams, ...teamsStore} = useTeamsStore();
 
+watch(() => visible.value, (newValue) => {
+  if (newValue) {
+    localTeam.value = props.cross?.local_team ?? null
+    visitorTeam.value = props.cross?.visitor_team ?? null
+    date.value = props.cross ? getDateFromString(props.cross.date) : null
+  }
+})
 
 const teams = computed(() => teamsStore.teams)
 onMounted(() => {
@@ -72,7 +79,7 @@ const onSubmit = async (e, editMode: boolean) => {
 </script>
 
 <template>
-  <Button v-if="editMode" size="small" @click="visible = true" icon="pi pi-pen-square"/>
+  <Button v-if="editMode" size="small" @click="visible = true" icon="pi pi-pen-to-square"/>
   <Button v-else label="Agregar Cruce" icon-pos="right" @click="visible = true" class="w-full" icon="pi pi-plus"/>
 
   <Dialog @hide="clear" class="mx-3 w-full md:w-6 lg:w-4" v-model:visible="visible" modal header="Crear cruce">

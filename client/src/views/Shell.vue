@@ -7,7 +7,10 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 onMounted(() => {
-  authStore.getCurrentUser();
+  // get current user if not in /login
+  if (router.currentRoute.value.path !== '/login') {
+    authStore.getCurrentUser()
+  }
 })
 
 </script>

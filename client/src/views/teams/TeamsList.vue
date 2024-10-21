@@ -3,10 +3,11 @@ import Button from 'primevue/button';
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
 import {useTeamsStore} from "../../store/teams.ts";
-import {computed, onMounted} from "vue";
+import {computed, onMounted, ref} from "vue";
 import CreateTeamDialog from "./CreateTeamDialog.vue";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
+import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
 
 const teamsStore = useTeamsStore()
 
@@ -20,17 +21,19 @@ onMounted(() => {
   }
 })
 const teams = computed(() => teamsStore.teams)
-
+const home = ref({
+  icon: 'pi pi-home',
+  route: '/home'
+})
 const items = computed(() => [
-  {label: 'Home', url: '/home'},
-  {label: 'Equipos', url: '/teams'},
+  {label: 'Equipos', route: '/teams'},
 ])
 </script>
 
 <template>
   <header class="w-full">
-    <Breadcrumb class="py-2 px-0" :model="items">
-    </Breadcrumb>
+    <CustomBreadcrumb :home="home" :model="items">
+    </CustomBreadcrumb>
     <div class="flex gap-2 justify-content-between pb-2 align-items-start ">
       <h1>Equipos</h1>
       <CreateTeamDialog
