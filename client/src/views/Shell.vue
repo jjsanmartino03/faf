@@ -76,7 +76,7 @@ onMounted(async () => {
     <div class="p-2 gap-3 flex flex-column w-full lg:w-6 bg-white h-full justify-content-start">
       <RouterView/>
     </div>  
-    <div class="p-2 gap-3 flex fixed bg-teal-600 lg:w-6 justify-content-center bottom-0 r-5 w-full border-round-3xl mx-2"
+    <div class="p-2 gap-3 flex fixed bg-teal-600 lg:w-6 justify-content-center bottom-0 r-5 w-full border-round-top-3xl mx-2"
         v-if="showMenu">
         <Button  
           v-for="option in menuOptions"
