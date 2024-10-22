@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {defineProps, PropType, computed} from 'vue';
+import {defineProps, PropType, computed, defineEmits} from 'vue';
 
 import Card from 'primevue/card';
 import Panel from "primevue/panel";
@@ -9,6 +9,8 @@ import {getDateFromString} from "../../utils/dates.ts";
 import {ValidationStatus} from "../../utils/constants.ts";
 import {useAuthStore} from "../../store/auth.ts";
 import CreateCrossDialog from "./CreateCrossDialog.vue";
+
+const emit = defineEmits(['openDialog'])
 
 const props = defineProps({
   cross: {
@@ -25,18 +27,6 @@ const authStore = useAuthStore();
 
 const borderClass = computed(() => {
   return 'border-1 border-left-3 border-primary';
-  switch (props.cross) {
-    case 'Approved':
-      return 'border-1 border-left-3 border-primary';
-    case 'Rejected':
-      return 'border-1 border-left-3 border-red-700';
-    case 'Verifying':
-      return 'border-1 border-left-3 border-orange-300';
-    case 'Available':
-      return 'border-1 border-left-3 border-warning';
-    default:
-      return '';
-  }
 });
 
 console.log(authStore.user)
@@ -69,6 +59,10 @@ const getSeverityFromStatus = (status: string) => {
     default:
       return '';
   }
+}
+
+const openDialog = () => {
+  emit('openDialog', !isAdmin.value);
 }
 </script>
 
@@ -109,12 +103,14 @@ const getSeverityFromStatus = (status: string) => {
               </div>
               <div v-if="isAdmin || userTeamId === cross.local_team.id" class="col-3 text-center">
                 <Button :severity="getSeverityFromStatus(match.local_validation.status)"
-                        :icon="getIconClassFromStatus(match.local_validation.status)"/>
+                        :icon="getIconClassFromStatus(match.local_validation.status)"
+                        @click="openDialog()"/>
               </div>
               <div v-if="isAdmin" class="col-2 text-center">vs</div>
               <div v-if="isAdmin || userTeamId === cross.visitor_team.id" class="col-3 text-center">
                 <Button :severity="getSeverityFromStatus(match.visitor_validation.status)"
-                        :icon="getIconClassFromStatus(match.visitor_validation.status)"/>
+                        :icon="getIconClassFromStatus(match.visitor_validation.status)"
+                        @click="openDialog()"/>
               </div>
 
             </div>

@@ -19,7 +19,7 @@ const props = defineProps({
 })
 </script>
 <template>
-  <Breadcrumb :home="home" :class="className" :model="model">
+  <Breadcrumb :class="className" :model="model">
     <template #item="{ item, props }">
       <router-link v-if="item.route" v-slot="{ href, navigate }" :to="item.route" custom>
         <a  :href="href" v-bind="props.action" @click="navigate">

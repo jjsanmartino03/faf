@@ -9,6 +9,7 @@ import ProgressSpinner from "primevue/progressspinner";
 import CreateCrossDialog from "./CreateCrossDialog.vue";
 import {useAuthStore} from "../../store/auth.ts";
 import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
+import UploadTeamValidationImageDialog from '../teams/UploadTeamValidationImageDialog.vue';
 
 const store = useCrossesStore();
 const authStore = useAuthStore()
@@ -38,6 +39,7 @@ const model = computed(() => [
   {label: 'Partidos'},
 ])
 
+const showUploadTeamValidationImageDialog = ref(false);
 </script>
 <template>
 
@@ -64,7 +66,7 @@ const model = computed(() => [
       </div>
       <div v-if="store.statusGetCrosses == 'success'" class="w-full">
         <div v-if="crosses && crosses.length" class="w-full">
-          <Cross :on-update="search" v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3"/>
+          <Cross :on-update="search" v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3" @openDialog="showUploadTeamValidationImageDialog = $event"/>
         </div>
         <div v-else>
           <div class="text-center">No se encontraron partidos</div>
@@ -72,6 +74,9 @@ const model = computed(() => [
       </div>
 
     </div>
+  </div>
+  <div class="w-full">
+      <UploadTeamValidationImageDialog :visible="showUploadTeamValidationImageDialog" @update:visible="showUploadTeamValidationImageDialog = $event"/>
   </div>
 </template>
 

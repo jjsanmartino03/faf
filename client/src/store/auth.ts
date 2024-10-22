@@ -47,6 +47,7 @@ export const useAuthStore: StoreDefinition<"auth", AuthStore> = defineStore('aut
   function logout() {
     this.token = null
     this.isAuthenticated = false
+    this.user = null
     localStorage.removeItem('token')
   }
 
@@ -54,7 +55,7 @@ export const useAuthStore: StoreDefinition<"auth", AuthStore> = defineStore('aut
     try {
       const response = await api.get('api/user/')
       user.value = response
-      console.log(response.data, 'response');
+      console.log(response, 'response');
     } catch (e) {
       return false
     }

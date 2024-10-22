@@ -18,6 +18,7 @@ const primaryColor = ref(getComputedStyle(document.documentElement).getPropertyV
 const authStore = useAuthStore()
 const username = ref('');
 const password = ref('');
+const isAdmin = ref(false);
 
 if (authStore.isAuthenticated) {
   /*router.push({
@@ -30,9 +31,10 @@ async function login(e) {
   e.preventDefault()
   const result = await authStore.login(username.value, password.value)
   if (result) {
-    authStore.getCurrentUser()
+    await authStore.getCurrentUser()
+    isAdmin.value = authStore.isAdmin
     await router.push({
-      name: 'home'
+      name: 'matches'
     })
   }
 }
