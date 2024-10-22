@@ -69,11 +69,11 @@ console.log(props.team);
           <label for="logo">Url de la imagen</label>
           <InputText required="true" id="logo" v-model="logo_url"/>
         </FloatLabel>
-        <div>O</div>
-        <div class="card flex flex-column align-items-center gap-3">
+        <!--<div>O</div>
+<div class="card flex flex-column align-items-center gap-3">
           <FileUpload accept="image/jpeg,image/png" mode="basic" @select="onFileSelect" customUpload auto severity="secondary" class="p-button-outlined" />
           <img v-if="src" :src="src" alt="Image" class="shadow-md rounded-xl w-full sm:w-64" />
-        </div>
+        </div>-->
       </div>
       <div v-if="statusCreateTeam != 'loading'" class="flex justify-end gap-2 mt-4">
         <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
