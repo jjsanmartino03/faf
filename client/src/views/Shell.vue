@@ -71,6 +71,7 @@ onMounted(async () => {
 
 <template>
   <main class="bg-gray-100 flex flex-column align-items-center"
+        style="height: 100dvh"
     :class="{'pb-3': showMenu}"> 
     <div class="p-2 gap-3 flex flex-column w-full lg:w-6 bg-white h-full justify-content-start">
       <RouterView/>
