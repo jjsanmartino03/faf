@@ -19,10 +19,17 @@ onMounted(async () => {
 })
 const crosses = computed(() => store.crosses)
 
+const validationId = ref<number | null>(null)
+
 const keyword = ref('')
 
 const search = () => {
   store.getCrosses(keyword.value)
+}
+
+const handleDialogEvent = (openDialog: boolean,validation_id: number) => {
+  validationId.value = validation_id;
+  showUploadTeamValidationImageDialog.value = openDialog;
 }
 
 const onKeydown = (e) => {
@@ -66,7 +73,7 @@ const showUploadTeamValidationImageDialog = ref(false);
       </div>
       <div v-if="store.statusGetCrosses == 'success'" class="w-full">
         <div v-if="crosses && crosses.length" class="w-full">
-          <Cross :on-update="search" v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3" @openDialog="showUploadTeamValidationImageDialog = $event"/>
+          <Cross :on-update="search" v-for="cross in crosses" :key="cross.id" :cross="cross" class="my-3" @openDialog="handleDialogEvent"/>
         </div>
         <div v-else>
           <div class="text-center">No se encontraron partidos</div>
@@ -76,7 +83,7 @@ const showUploadTeamValidationImageDialog = ref(false);
     </div>
   </div>
   <div class="w-full">
-      <UploadTeamValidationImageDialog :visible="showUploadTeamValidationImageDialog" @update:visible="showUploadTeamValidationImageDialog = $event"/>
+      <UploadTeamValidationImageDialog :visible="showUploadTeamValidationImageDialog" :validationId="validationId" @update:visible="showUploadTeamValidationImageDialog = $event"/>
   </div>
 </template>
 

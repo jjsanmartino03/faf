@@ -30,6 +30,7 @@ const team = ref<TeamWithCategories | null>(null);
 const statusGetTeams = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 const statusCreateTeam = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 const statusGetTeam = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
+const statusUploadImage = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 
 export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('teams', () => {
   const toast = useToast();
@@ -106,7 +107,33 @@ export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('
       });
       return e
     }
+  }
 
+  async function uploadImage(ValidationId: number, image: File) {
+    try {
+      statusUploadImage.value = 'loading';
+      const formData = new FormData();
+      formData.append('image', image);
+      await api.post(`api/teams/${ValidationId}/upload_image`, formData, {
+        'Content-Type': 'multipart/form-data'
+      });
+      statusUploadImage.value = 'success';
+      toast.add({
+        severity: 'success',
+        summary: 'Imagen actualizada',
+        detail: 'La imagen ha sido actualizada correctamente',
+        life: 3000
+      });
+    } catch (e) {
+      console.error(e)
+      toast.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'Ha ocurrido un error al actualizar la imagen',
+        life: 3000
+      });
+      statusUploadImage.value = 'error';
+    }
   }
 
   return {
@@ -118,6 +145,8 @@ export const useTeamsStore: StoreDefinition<"teams", TeamsStore> = defineStore('
     getTeams,
     createTeam,
     getTeam,
-    updateTeam
+    updateTeam,
+    uploadImage,
+    statusUploadImage
   };
 })

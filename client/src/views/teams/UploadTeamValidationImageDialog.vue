@@ -5,14 +5,18 @@ import FileUpload from "primevue/fileupload";
 import { defineProps } from "vue";
 import { defineEmits } from "vue";
 import Button from "primevue/button";
-import { useCrossesStore } from "../../store/crosses";
+import { useTeamsStore } from "../../store/teams";
 
-const {uploadImage,statusUploadImage} = useCrossesStore()
+const {uploadImage,statusUploadImage} = useTeamsStore()
 
 const props = defineProps({
     visible: {
         type: Boolean,
         default: false
+    },
+    validationId: {
+        type: Number,
+        isRequired: true
     }
 })
 
@@ -22,13 +26,11 @@ const src = ref<string | null>(null)
 
 const emit = defineEmits(['update:visible'])
 
-
-
 const onSubmit = async (e) => {
   e.preventDefault()
   let error = null
   if(!image.value) return
-  error = await uploadImage(image.value)
+  error = await uploadImage(props.validationId,image.value)
   if (error) return
   visible.value = false
   image.value = null

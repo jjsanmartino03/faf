@@ -61,8 +61,8 @@ const getSeverityFromStatus = (status: string) => {
   }
 }
 
-const openDialog = () => {
-  emit('openDialog', !isAdmin.value);
+const openDialog = (validationId: number) => {
+  emit('openDialog', !isAdmin.value, validationId);
 }
 </script>
 
@@ -104,13 +104,13 @@ const openDialog = () => {
               <div v-if="isAdmin || userTeamId === cross.local_team.id" class="col-3 text-center">
                 <Button :severity="getSeverityFromStatus(match.local_validation.status)"
                         :icon="getIconClassFromStatus(match.local_validation.status)"
-                        @click="openDialog()"/>
+                        @click="openDialog(match.local_validation.id)"/>
               </div>
               <div v-if="isAdmin" class="col-2 text-center">vs</div>
               <div v-if="isAdmin || userTeamId === cross.visitor_team.id" class="col-3 text-center">
                 <Button :severity="getSeverityFromStatus(match.visitor_validation.status)"
                         :icon="getIconClassFromStatus(match.visitor_validation.status)"
-                        @click="openDialog()"/>
+                        @click="openDialog(match.visitor_validation.id)"/>
               </div>
 
             </div>
