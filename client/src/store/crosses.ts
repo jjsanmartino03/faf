@@ -42,6 +42,7 @@ export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineS
     const statusCreateCross = ref<'loading' | 'success' | 'error' | 'idle'>('idle')
     const statusGetCross = ref<'loading' | 'success' | 'error' | 'idle'>('idle')
     const toast = useToast();
+    const statusUploadImage = ref<'loading' | 'success' | 'error' | 'idle'>('idle');
 
     async function getCrosses(keyword: string) {
       try {
@@ -110,6 +111,33 @@ export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineS
       }
     }
 
+    async function uploadImage(image: File) {
+      try {
+        statusUploadImage.value = 'loading';
+        const formData = new FormData();
+        formData.append('image', image);
+        await api.post(`api/validation-test`, formData, {
+          'Content-Type': 'multipart/form-data'
+        });
+        statusUploadImage.value = 'success';
+        toast.add({
+          severity: 'success',
+          summary: 'Imagen actualizada',
+          detail: 'La imagen ha sido actualizada correctamente',
+          life: 3000
+        });
+      } catch (e) {
+        console.error(e)
+        toast.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'Ha ocurrido un error al actualizar la imagen',
+          life: 3000
+        });
+        statusUploadImage.value = 'error';
+      }
+    }
+
     return {
       crosses,
       cross,
@@ -118,7 +146,8 @@ export const useCrossesStore: StoreDefinition<"matches", MatchesStore> = defineS
       statusGetCross,
       getCrosses,
       createCross,
-      updateCross
+      updateCross,
+      uploadImage
     }
   }
 )

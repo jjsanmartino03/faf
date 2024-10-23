@@ -5,11 +5,9 @@ import FileUpload from "primevue/fileupload";
 import { defineProps } from "vue";
 import { defineEmits } from "vue";
 import Button from "primevue/button";
+import { useCrossesStore } from "../../store/crosses";
 
-const visible = ref(false);
-const fileUploaded = ref(false);
-
-const emit = defineEmits(['update:visible'])
+const {uploadImage,statusUploadImage} = useCrossesStore()
 
 const props = defineProps({
     visible: {
@@ -18,35 +16,42 @@ const props = defineProps({
     }
 })
 
-const files = ref(null)
+const visible = ref(false);
+const image = ref<File | null>(null)
+const src = ref<string | null>(null)
+
+const emit = defineEmits(['update:visible'])
+
+
 
 const onSubmit = async (e) => {
-    e.preventDefault()
-
-    let error = null
-
-    if (error) return
-
-    visible.value = false
+  e.preventDefault()
+  let error = null
+  if(!image.value) return
+  error = await uploadImage(image.value)
+  if (error) return
+  visible.value = false
+  image.value = null
+  src.value = null
 }
-
-const onAdvancedUpload = (e) => {
-    console.log(e)
-}
-
-const handleFileUpload = (event) => {
-  const file = event.files[0];
-  fileUploaded.value = file ? true : false;
-  files.value = event.files;
-};
 
 const onHide = () => {
     visible.value = false;
-    fileUploaded.value = false;
+    image.value = null;
+    src.value = null;
 }
 
-const clearCallback = () => {
-    fileUploaded.value = false;
+const onFileSelect = (event) => {
+  const file = event.files[0];
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    src.value = e.target.result as string;
+  };
+
+  image.value = file
+
+  reader.readAsDataURL(file);
 }
 
 watch(() => props.visible, (newVal) => {
@@ -60,31 +65,22 @@ watch(() => visible.value, (newVal) => {
 
 <template>
     <Dialog v-model:visible="visible" header="Subir imagen de validación de equipo" @hide="onHide">
-        <template #header>
-            <h3 class="mr-2">
-                Subir imagen de validación de equipo
-            </h3>
-        </template>
-        <template #default>
-            <FileUpload name="demo[]" 
-                :file-limit="1" 
-                url="/api/upload" 
-                accept="image/*" 
-                :maxFileSize="1000000" 
-                upload-label="Subir"
-                cancel-label="Eliminar"
-                cancel-icon="pi pi-times"
-                choose-label="Elegir"
-                @select="handleFileUpload"
-                @remove="clearCallback"
-                @clear="clearCallback"
-            </FileUpload>
-            <span v-if="!fileUploaded" class="p-info mt-2">
-                <small>Seleccione una imagen para subir</small>
-            </span>
-        </template>
-        <template #footer>
-            <Button label="Cancelar" icon="pi pi-times" @click="visible = false"/>
-        </template>
+        <form @submit.prevent="(e) => onSubmit(e)"
+            class="flex flex-column w-full align-items-center justify-content-center">
+            <div class="p-field ">
+                <div class="card flex flex-column align-items-center gap-3">
+                    <FileUpload accept="image/jpeg,image/png" mode="basic" @select="onFileSelect" customUpload auto
+                        severity="secondary" class="p-button-outlined" />
+                    <img v-if="src" :src="src" alt="Image" class="shadow-md rounded-xl w-full sm:w-64" />
+                </div>
+            </div>
+            <div v-if="statusUploadImage != 'loading'" class="flex justify-end gap-2 mt-4">
+                <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
+                <Button type="submit" label="Guardar"></Button>
+            </div>
+            <div v-else class="flex justify-content-center">
+                <ProgressSpinner strokeWidth="4" style="width: 1.5rem; height: 1.5rem;" />
+            </div>
+        </form>
     </Dialog>
 </template>
