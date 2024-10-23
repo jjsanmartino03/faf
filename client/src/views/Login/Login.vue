@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {ref} from 'vue';
+import {computed, ref} from 'vue';
 
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
@@ -18,7 +18,7 @@ const primaryColor = ref(getComputedStyle(document.documentElement).getPropertyV
 const authStore = useAuthStore()
 const username = ref('');
 const password = ref('');
-const isAdmin = ref(false);
+const isAdmin = computed(() => authStore.isAdmin)
 
 if (authStore.isAuthenticated) {
   /*router.push({
@@ -32,7 +32,6 @@ async function login(e) {
   const result = await authStore.login(username.value, password.value)
   if (result) {
     await authStore.getCurrentUser()
-    isAdmin.value = authStore.isAdmin
     await router.push({
       name: 'matches'
     })
