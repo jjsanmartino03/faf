@@ -90,8 +90,9 @@ export const usePlayersStore = defineStore("players", () => {
   }
 
   async function uploadImage(playerId: number, image: File) {
+    statusUploadImage.value = 'loading';
     try {
-      statusUploadImage.value = 'loading';
+
       const formData = new FormData();
       formData.append('image', image);
       await api.post(`api/players/${playerId}/image/`, formData, {

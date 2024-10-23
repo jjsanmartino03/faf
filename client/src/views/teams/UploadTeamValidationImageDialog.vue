@@ -14,10 +14,14 @@ const props = defineProps({
         type: Boolean,
         default: false
     },
+    onComplete: {
+      type: Function,
+      required: true
+    },
     validationId: {
         type: Number,
         isRequired: true
-    }
+    },
 })
 
 const visible = ref(false);
@@ -32,6 +36,8 @@ const onSubmit = async (e) => {
   if(!image.value) return
   error = await uploadImage(props.validationId,image.value)
   if (error) return
+
+  props.onComplete && props.onComplete()
   visible.value = false
   image.value = null
   src.value = null
@@ -66,9 +72,9 @@ watch(() => visible.value, (newVal) => {
 </script>
 
 <template>
-    <Dialog v-model:visible="visible" header="Subir imagen de validación de equipo" @hide="onHide">
+    <Dialog class="max-w-full lg:w-6" v-model:visible="visible" header="Subir imagen de validación" @hide="onHide">
         <form @submit.prevent="(e) => onSubmit(e)"
-            class="flex flex-column w-full align-items-center justify-content-center">
+            class="flex flex-column w-full align-items-center justify-content-center ">
             <div class="p-field ">
                 <div class="card flex flex-column align-items-center gap-3">
                     <FileUpload accept="image/jpeg,image/png" mode="basic" @select="onFileSelect" customUpload auto
