@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType, ref} from "vue";
+import {computed, PropType, ref} from "vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import FloatLabel from "primevue/floatlabel";
@@ -17,7 +17,7 @@ const props = defineProps({
   }
 })
 
-const {getPlayer, statusUploadImage, uploadImage} = usePlayersStore()
+const {getPlayer, uploadImage,...playersStore} = usePlayersStore()
 
 const image = ref<File | null>(null)
 const src = ref<string | null>(null)
@@ -48,6 +48,8 @@ const onSubmit = async (e) => {
   await getPlayer(props.playerId)
   visible.value = false
 }
+const statusUploadImage = computed(() => playersStore.statusUploadImage)
+
 
 </script>
 
@@ -63,7 +65,7 @@ const onSubmit = async (e) => {
           <img v-if="src" :src="src" alt="Image" class="shadow-md rounded-xl w-full sm:w-64" />
         </div>
       </div>
-      <div v-if="statusUploadImage != 'loading'" class="flex justify-end gap-2 mt-4">
+      <div v-if="statusUploadImage !== 'loading'" class="flex justify-end gap-2 mt-4">
         <Button type="button" label="Cancelar" severity="secondary" @click="visible = false"></Button>
         <Button type="submit" label="Guardar"></Button>
       </div>

@@ -2,6 +2,7 @@ import os.path
 
                        
 from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
 from django.http.multipartparser import MultiPartParser
 from rest_framework import serializers, viewsets
 from rest_framework.authentication import TokenAuthentication

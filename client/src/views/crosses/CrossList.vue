@@ -83,7 +83,7 @@ const showUploadTeamValidationImageDialog = ref(false);
     </div>
   </div>
   <div class="w-full">
-      <UploadTeamValidationImageDialog :visible="showUploadTeamValidationImageDialog" :validationId="validationId" @update:visible="showUploadTeamValidationImageDialog = $event"/>
+      <UploadTeamValidationImageDialog :on-complete="search" :visible="showUploadTeamValidationImageDialog" :validationId="validationId" @update:visible="showUploadTeamValidationImageDialog = $event"/>
   </div>
 </template>
 
