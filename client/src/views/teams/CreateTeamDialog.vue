@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import {PropType, ref} from "vue";
+import {PropType, ref, watch} from "vue";
 import Button from "primevue/button";
 import Dialog from "primevue/dialog";
 import FloatLabel from "primevue/floatlabel";
@@ -7,6 +7,7 @@ import InputText from "primevue/inputtext";
 import {useTeamsStore, Team} from "../../store/teams";
 import ProgressSpinner from "primevue/progressspinner";
 import FileUpload from "primevue/fileupload";
+import {getDateFromString} from "../../utils/dates.ts";
 
 const visible = ref(false);
 const props = defineProps({
@@ -18,11 +19,20 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
+  onCompleteAction: {
+    required: false,
+    type: Function as PropType<() => void>,
+  }
 })
 const name = ref(props.team ? props.team.name : '');
 const logo_url = ref(props.team ? props.team.logo_url : '');
 
-
+watch(() => visible.value, (newValue) => {
+  if (newValue) {
+    name.value = props.team?.name ?? null
+    logo_url.value = props.team?.logo_url ?? null
+  }
+})
 const {createTeam, statusCreateTeam, getTeams, updateTeam} = useTeamsStore()
 
 
@@ -44,7 +54,7 @@ const onSubmit = async (e, editMode) => {
 
   if (error) return
 
-  await getTeams()
+  props.onCompleteAction && props.onCompleteAction()
   visible.value = false
 }
 

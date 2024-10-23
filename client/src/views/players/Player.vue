@@ -8,6 +8,7 @@ import {useTeamsStore} from "../../store/teams.ts";
 import {useAuthStore} from "../../store/auth.ts";
 import UploadPlayerImageDialog from "./UploadPlayerImageDialog.vue";
 import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
+import CreatePlayerDialog from "../teams/CreatePlayerDialog.vue";
 
 const route = useRoute()
 const apiUrl = import.meta.env.VITE_API_URL
@@ -27,6 +28,8 @@ onMounted(() => {
   playersStore.getPlayer(parseInt(playerId as string))
   teamsStore.getTeam(parseInt(teamId as string))
 })
+
+const onUpdatePlayer = () => playersStore.getPlayer(parseInt(playerId as string))
 
 const team = computed(() => teamsStore.team)
 const categoryYear = computed(() =>
@@ -62,6 +65,8 @@ const items = computed(() => [
                 :icon="isEnabled ? 'pi pi-check' : 'pi pi-times'" :severity="isEnabled ?'success' : 'danger'"
                 class="mr-2 text-4xl" icon-class="text-xl"
                 text @click="() =>updatePlayerStatus(!isEnabled)"/>
+        <CreatePlayerDialog :on-complete-action="onUpdatePlayer" :category-id="parseInt(route.params.categoryId as string)" :player="player"
+                            :edit-mode="true"/>
       </div>
 
     </header>

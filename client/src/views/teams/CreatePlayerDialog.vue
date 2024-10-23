@@ -21,6 +21,10 @@ const props = defineProps({
   categoryId: {
     type: Number,
     required: true
+  },
+  onCompleteAction: {
+    required: false,
+    type: Function as PropType<() => void>,
   }
 })
 const name = ref(props.player ? props.player.name : '');
@@ -45,7 +49,7 @@ const onSubmit = async (e, editMode) => {
 
   if (error) return
 
-  await getPlayers(props.categoryId)
+  props.onCompleteAction && props.onCompleteAction()
   visible.value = false
 }
 

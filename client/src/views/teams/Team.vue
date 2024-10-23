@@ -1,6 +1,6 @@
 <script setup>
 import {computed, onMounted, ref} from "vue";
-import {useRoute} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
 import Button from "primevue/button";
 import Column from "primevue/column";
 import DataTable from "primevue/datatable";
@@ -8,6 +8,7 @@ import {useTeamsStore} from "../../store/teams";
 import ProgressSpinner from "primevue/progressspinner";
 import Breadcrumb from "primevue/breadcrumb";
 import CustomBreadcrumb from "../../components/CustomBreadcrumb.vue";
+import CreateTeamDialog from "./CreateTeamDialog.vue";
 
 const route = useRoute()
 
@@ -28,7 +29,11 @@ const items = computed(() => [
   {label: 'Equipos', route: '/teams'},
   {label: team.value ? team.value.name : '', url: '/teams/' + teamId},
 ])
-
+const router = useRouter();
+const onCategoryClick = (team,id) => {
+  router.push('/teams/' + team  .id + '/categories/' + id)
+}
+const onUpdateTeam = () => teamsStore.getTeam(teamId)
 </script>
 <template>
   <main v-if="team" class="flex w-full flex-column justify-content-start align-items-center h-full gap-4">
@@ -36,24 +41,18 @@ const items = computed(() => [
     <header class="w-full">
       <CustomBreadcrumb :home="home" :model="items">
       </CustomBreadcrumb>
-      <div class="flex gap-4 justify-content-start pb-2 center ">
+      <div class="flex gap-4 justify-content-start pb-2 align-items-center ">
         <img :src="team.logo_url" :alt="team.logo_url" class="w-6rem border-round"/>
         <h1>{{ team.name }}</h1>
+        <div><CreateTeamDialog :on-complete-action="onUpdateTeam" :team="team" :edit-mode="true" /></div>
       </div>
     </header>
     <div class="w-full">
       <h2>Categorías</h2>
-      <DataTable :value="team.categories" table-style="min-width: 100%; width: 100%" class="w-full">
+      <DataTable @row-click="slotProps => onCategoryClick(team,slotProps.data.id)" :value="team.categories" table-style="min-width: 100%; width: 100%" class="w-full">
         <Column field="year" header="Categoría" body-class="font-bold">
           <template #body="slotProps">
             Cat. {{ slotProps.data.category }}
-          </template>
-        </Column>
-        <Column header="Acciones" class="font-bold flex justify-content-center">
-          <template #body="slotProps">
-            <router-link :to="'/teams/' + team.id + '/categories/' + slotProps.data.id">
-              <Button icon="pi pi-external-link" class="mr-2"/>
-            </router-link>
           </template>
         </Column>
       </DataTable>
