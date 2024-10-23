@@ -78,7 +78,10 @@ class VisionService:
                 player_id = "Unknown"
         
             recognized_player_ids.append(player_id)
-        
+
+        if len(recognized_player_ids) == 0:
+            return False
+
         for player_id in recognized_player_ids:
             if player_id == "Unknown":
                 return False
