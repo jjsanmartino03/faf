@@ -2,6 +2,12 @@ from rest_framework import serializers, viewsets
 from rest_framework.response import Response
 
 from faf_api.models import Teams, Categories, TeamCategories
+from faf_api.models import Validation
+from faf_api.services.vision import VisionService
+from rest_framework.decorators import action
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import os.path
 
 
 class TeamsSerializer(serializers.ModelSerializer):
@@ -48,3 +54,36 @@ class TeamsViewSet(viewsets.ModelViewSet):
         team_data['categories'] = categories_data
 
         return Response(team_data)
+    
+    @action(detail=True, methods=['post'], url_path='upload_image')
+    def upload_image(self, request, pk=None):
+    # Validar que el id de la validación exista
+        try:
+               validation = Validation.objects.get(pk=pk)
+        except Validation.DoesNotExist:
+            return Response({'error': 'Validation ID not found'}, status=404)
+    # Obtener la imagen del request
+        image = request.data.get('image')
+        if not image:
+            return Response({'error': 'No image provided'}, status=400)
+    # Validar el formato de la imagen
+        if image.content_type not in ['image/jpeg', 'image/png']:
+            return Response({'error': 'Invalid image format'}, status=400)
+    # Guardar la imagen en la ruta especificada
+        extension = image.content_type.split('/')[-1]  # jpg o png
+        image_name = f'{pk}.{extension}'
+        relative_path = default_storage.save(f'validations/{image_name}', ContentFile(image.read()))
+        real_image_path = os.path.join(default_storage.location, relative_path)
+    # Pasar la ruta de la imagen al VisionService para validar
+        vision_service = VisionService()
+        is_valid = vision_service.recognize_players_in_image(real_image_path)
+    # Actualizar el estado de la validación
+        validation.status = 'passed' if is_valid else 'failed'
+        validation.save()
+    # Responder según lo que se necesite
+        response_data = {
+            'validation_id': validation.id,
+            'status': validation.status,
+            'image_path': relative_path
+        }
+        return Response(response_data, status=200)
