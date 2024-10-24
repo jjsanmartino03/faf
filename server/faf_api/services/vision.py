@@ -79,17 +79,20 @@ class VisionService:
         
             recognized_player_ids.append(player_id)
 
+        print(recognized_player_ids)
+
         if len(recognized_player_ids) == 0:
             return False
 
         for player_id in recognized_player_ids:
             if player_id == "Unknown":
                 return False
-        
+
             player = Players.objects.get(id=player_id)
+            print(player.name)
             if not player or player.status == 0:
                 return False
-        
+
         return True
 
     def _recognize_face(self, unknown_encoding, loaded_encodings):
@@ -109,3 +112,29 @@ class VisionService:
         )
         if votes:
             return votes.most_common(1)[0][0]
+
+    def delete_player_from_model(self, player_id):
+        # recibe un id de jugador y lo elimina del modelo
+        """
+        Deletes a player from the model
+        """
+        with self.encodings_location.open(mode="rb") as f:
+            loaded_encodings = pickle.load(f)
+
+        player_ids = loaded_encodings["player_ids"]
+        encodings = loaded_encodings["encodings"]
+
+        result_players = []
+        result_encodings = []
+        for i, player in enumerate(player_ids):
+            if player != player_id:
+                print(i,player,player_id)
+                result_players.append(player)
+                result_encodings.append(encodings[i])
+                # player_ids.pop(i)
+                # encodings.pop(i)
+
+        player_id_encodings = {"player_ids": player_ids, "encodings": encodings}
+        with self.encodings_location.open(mode="wb") as f:
+            pickle.dump(player_id_encodings, f)
+        return
