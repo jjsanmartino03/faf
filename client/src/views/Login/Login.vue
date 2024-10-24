@@ -31,7 +31,6 @@ async function login(e) {
   e.preventDefault()
   const result = await authStore.login(username.value, password.value)
   if (result) {
-    await authStore.getCurrentUser()
     await router.push({
       name: 'matches'
     })

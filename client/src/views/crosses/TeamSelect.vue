@@ -12,6 +12,10 @@ const props = defineProps({
   disabled: {
     default: false,
     type: Boolean as PropType<boolean>,
+  },
+  exclude: {
+    default: null,
+    type: Object as PropType<Team | null>,
   }
 });
 
@@ -21,12 +25,15 @@ const teamsStore = useTeamsStore()
 
 const selectedTeam = ref(props.modelValue);
 
-const teams = computed(() => teamsStore.teams)
+const teams = computed(() => teamsStore.teams.filter(t => t.id != props.exclude?.id))
 
 const updateSelectedTeam = (team: Team) => {
   selectedTeam.value = team
   emit('update:modelValue', toRaw(team))
 }
+
+
+
 </script>
 
 <template>
