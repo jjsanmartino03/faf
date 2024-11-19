@@ -14,10 +14,10 @@ if platform.system == "Windows":
     pose_predictor_68_point = dlib.shape_predictor(model_path)
 import face_recognition
 
-from faf_api.models import Players
+from faf_api.models import Players, TeamCategories
 
 WHITE = (255, 255, 255)
-RED = (255, 0, 0)
+RED = (0, 0, 255)
 BLACK = (0, 0, 0)
 GREEN = (0, 255, 0)
 
@@ -57,7 +57,7 @@ class VisionService:
             pickle.dump(player_id_encodings, f)
         return
 
-    def recognize_players_in_image(self, image_location: str):
+    def recognize_players_in_image(self, image_location: str,team_id:int):
         # recibe una imagen y devuelve los jugadores reconocidos
         """
         Given an unknown image, get the locations and encodings of any faces and
@@ -94,11 +94,15 @@ class VisionService:
 
             if not player:
                 validation_ok = False
-                cv_image = self._display_face(cv_image, bounding_box, "Unknown", RED)
+                cv_image = self._display_face(cv_image, bounding_box, "Desconocido", RED)
                 continue
 
             print(player.name)
-            print(player)
+
+            if player and player.team_category.team_id != team_id:
+                validation_ok = False
+                cv_image = self._display_face(cv_image, bounding_box, player.name, RED)
+                continue
 
             if player and player.status == 0:
                 validation_ok = False
@@ -139,7 +143,7 @@ class VisionService:
         image_height, image_width = image.shape[:2]
 
         # Calculate scale factor based on image dimensions
-        scale_factor = image_height / 1500  # Adjust 1500 to a suitable base height
+        scale_factor = image_height / 1000  # Adjust 1500 to a suitable base height
 
         # Adjust rectangle height and text size using the scale factor
         rectangle_height = int(35 * scale_factor)
