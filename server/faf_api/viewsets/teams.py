@@ -1,4 +1,6 @@
 from rest_framework import serializers, viewsets
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from faf_api.models import Teams, Categories, TeamCategories
@@ -17,8 +19,8 @@ class TeamsSerializer(serializers.ModelSerializer):
 
 
 class TeamsViewSet(viewsets.ModelViewSet):
-    authentication_classes = []
-    permission_classes = []
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
 
     serializer_class = TeamsSerializer
     queryset = Teams.objects.all().order_by('name')
@@ -76,7 +78,10 @@ class TeamsViewSet(viewsets.ModelViewSet):
         real_image_path = os.path.join(default_storage.location, relative_path)
         # Pasar la ruta de la imagen al VisionService para validar
         vision_service = VisionService()
-        is_valid = vision_service.recognize_players_in_image(real_image_path)
+
+        team_id = request.user.team_id
+
+        is_valid = vision_service.recognize_players_in_image(str(real_image_path), team_id)
         # Actualizar el estado de la validación
         validation.status = 'passed' if is_valid else 'failed'
         validation.save()

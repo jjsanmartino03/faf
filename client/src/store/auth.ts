@@ -32,10 +32,10 @@ export const useAuthStore: StoreDefinition<"auth", AuthStore> = defineStore('aut
     try {
       this.status = 'loading'
       const response = await api.post<LoginResponse>('api-auth/', {username, password})
-
       this.token = response.token
       localStorage.setItem('token', response.token)
       this.isAuthenticated = true
+      await getCurrentUser()
       this.status = 'success'
       return true
     } catch (e) {

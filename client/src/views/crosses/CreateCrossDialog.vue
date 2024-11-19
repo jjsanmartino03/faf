@@ -87,11 +87,11 @@ const onSubmit = async (e, editMode: boolean) => {
           class="flex flex-column gap-3 w-full align-items-center justify-content-center">
       <div class="p-field w-full">
         <label>Equipo local</label>
-        <TeamSelect :disabled="editMode" v-model="localTeam"/>
+        <TeamSelect :exclude="visitorTeam" :disabled="editMode" v-model="localTeam"/>
       </div>
       <div class="p-field w-full">
         <label>Equipo visitante</label>
-        <TeamSelect :disabled="editMode" v-model="visitorTeam"/>
+        <TeamSelect :exclude="localTeam" :disabled="editMode" v-model="visitorTeam"/>
       </div>
       <div class="p-field w-full">
         <Calendar :min-date="new Date()" placeholder="Elige una fecha" class="w-full" v-model="date"
