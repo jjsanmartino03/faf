@@ -52,7 +52,8 @@ const onTeamClick = (id) => router.push('/teams/' + id)
 
   </header>
   <DataTable @row-click="(slotProps) => onTeamClick(slotProps.data.id)" :loading="teamsStore.statusGetTeams == 'loading'" :value="teamsStore.teams"
-             table-style="min-width: 100%; width: 100%" class="w-full">
+             table-style="min-width: 100%; width: 100%" class="w-full"
+             selectionMode="single">
 
     <Column field="logo" header="Escudo" class="w-2">
       <template #body="slotProps">
