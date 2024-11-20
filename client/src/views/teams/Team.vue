@@ -49,7 +49,8 @@ const onUpdateTeam = () => teamsStore.getTeam(teamId)
     </header>
     <div class="w-full">
       <h2>Categorías</h2>
-      <DataTable @row-click="slotProps => onCategoryClick(team,slotProps.data.id)" :value="team.categories" table-style="min-width: 100%; width: 100%" class="w-full">
+      <DataTable @row-click="slotProps => onCategoryClick(team,slotProps.data.id)" :value="team.categories" table-style="min-width: 100%; width: 100%" class="w-full"
+        selectionMode="single">
         <Column field="year" header="Categoría" body-class="font-bold">
           <template #body="slotProps">
             Cat. {{ slotProps.data.category }}

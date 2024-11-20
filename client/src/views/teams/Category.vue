@@ -77,7 +77,8 @@ const onRowClick = (playerId) => {
 
     </header>
     <DataTable @row-click="slotProps => onRowClick(slotProps.data.id)" :loading="playersStore.statusGetPlayers === 'loading'" :value="players"
-               table-style="min-width: 100%; width: 100%" class="w-full">
+               table-style="min-width: 100%; width: 100%" class="w-full"
+               selectionMode="single">
       <Column header="Jugador" sortable field="name" >
         <template #body="slotProps">
           <div class="flex gap-2 align-items-center">
