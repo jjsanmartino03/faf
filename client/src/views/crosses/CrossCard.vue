@@ -49,12 +49,12 @@ const getIconClassFromStatus = (status: string) => {
   }
 }
 
-const validationImageShouldBeShown = (validationStatus:string) => {
+const validationImageShouldBeShown = (validationStatus: string) => {
   return validationStatus !== ValidationStatus.PENDING;
 }
 
-const validationButtonShouldBeDisabled = (validationStatus:string) => {
-  return isAdmin || validationImageShouldBeShown(validationStatus);
+const validationButtonShouldBeDisabled = (validationStatus: string) => {
+  return isAdmin.value === true || validationImageShouldBeShown(validationStatus);
 }
 
 const getSeverityFromStatus = (status: string) => {
@@ -115,14 +115,17 @@ const openDialog = (validationId: number) => {
                         :icon="getIconClassFromStatus(match.local_validation.status)"
                         @click="openDialog(match.local_validation.id)"
                         :disabled="validationButtonShouldBeDisabled(match.local_validation.status)"/>
-                <ShowValidationImageDialog v-if="validationImageShouldBeShown(match.local_validation.status)" :validation-id="match.local_validation.id"/>
+                <ShowValidationImageDialog v-if="validationImageShouldBeShown(match.local_validation.status)"
+                                           :validation-id="match.local_validation.id"/>
               </div>
               <div v-if="isAdmin" class="col-2 flex text-center">vs</div>
               <div v-if="isAdmin || userTeamId === cross.visitor_team.id" class="col-3  flex gap-2 text-center">
                 <Button :severity="getSeverityFromStatus(match.visitor_validation.status)"
                         :icon="getIconClassFromStatus(match.visitor_validation.status)"
-                        @click="openDialog(match.visitor_validation.id)" :disabled="validationButtonShouldBeDisabled(match.visitor_validation.status)"/>
-                <ShowValidationImageDialog v-if="validationImageShouldBeShown(match.visitor_validation.status)" :validation-id="match.visitor_validation.id"/>
+                        @click="openDialog(match.visitor_validation.id)"
+                        :disabled="validationButtonShouldBeDisabled(match.visitor_validation.status)"/>
+                <ShowValidationImageDialog v-if="validationImageShouldBeShown(match.visitor_validation.status)"
+                                           :validation-id="match.visitor_validation.id"/>
               </div>
 
             </div>
